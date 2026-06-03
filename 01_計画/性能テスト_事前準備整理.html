@@ -275,6 +275,49 @@
     </div>
   </div>
 
+  <h2 class="section">2.5 負荷条件の検討事項（要検討 ＝ ToDo#126関連／上乗せ／#5投入方法）</h2>
+  <p class="lead" style="background:#eef6ff; border-color:#bcdcff; color:#0c4a6e;">
+    認識合わせの中で判明した、<b>まだ確定していない負荷条件</b>です。テストデータ件数・ツール設定・実施手順の前提になるため、
+    準備の最初期に方針を固める対象として切り出しています。<b>ToDo#126</b> の回答待ち項目が中心。
+  </p>
+  <table>
+    <thead>
+      <tr><th style="width:90px;">対象</th><th>論点</th><th>現時点の方針・メモ</th><th style="width:120px;">状態</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>上乗せの形</td>
+        <td>平常時100TPSに特異電文を「上乗せ」する積み方か、別投入か</td>
+        <td>積み方が計画書上はっきりしない。検討内容として保留。</td>
+        <td><span class="tag tbd">要検討</span></td>
+      </tr>
+      <tr>
+        <td>#2 ネガデータ</td>
+        <td>投入時間・投入件数（計画書には150TPS×200秒表記あり）</td>
+        <td>ToDo#126回答を踏まえ設定。実質は<b>最大79TPS（瞬間）／50TPS×30秒（大量継続）</b>で設定する想定。</td>
+        <td><span class="tag dep">ToDo#126</span></td>
+      </tr>
+      <tr>
+        <td>#3 ECHO</td>
+        <td>投入時間・投入件数（5000TPS目標）</td>
+        <td>ToDo#126回答を踏まえ設定。ツール制限で5000TPS不可の場合は可能な限りの件数で確認。</td>
+        <td><span class="tag dep">ToDo#126</span></td>
+      </tr>
+      <tr>
+        <td>#4 応答遅延</td>
+        <td>無応答とする対象ISS</td>
+        <td>ToDo#126にて対象ISSを決定済との情報あり。決定内容を反映。</td>
+        <td><span class="tag dep">ToDo#126</span></td>
+      </tr>
+      <tr>
+        <td>#5 国際NW測定</td>
+        <td>投入方法（新大阪検証機Sim→東京・BT網経由 50TPS）</td>
+        <td><b>投入方法が未確定</b>。具体的な投入手順・経路・ツールを検討する。</td>
+        <td><span class="tag tbd">要検討</span></td>
+      </tr>
+    </tbody>
+  </table>
+
   <h2 class="section">3. 確定すべき宿題（計画書内の未確定事項）</h2>
   <p>テスト実行前に値・方針の確定が必要な箇所です。準備の早い段階で潰しておくと手戻りを防げます。</p>
   <dl class="open">
@@ -283,7 +326,7 @@
     <dt>ピーク時実績の年月が未定（202x年xx月）</dt>
     <dd>代行比率の根拠 (*1)「202x年xx月のピーク時実績」が仮表記。どの実績を採用するか確定が必要。<span class="tag tbd">要確定</span></dd>
     <dt>#3 ECHO 5000TPS のツール制限</dt>
-    <dd>「ツールの制限として投入不可となる場合、可能な限りの件数での確認とする」（2025/12/15追記）。事前に上限を検証し、目標件数を確定。<span class="tag tbd">要確定</span></dd>
+    <dd>「ツールの制限として投入不可となる場合、可能な限りの件数での確認とする」（2025/12/15追記）。事前に上限を検証し、目標件数を確定（最終値は ToDo#126／上記 2.5 参照）。<span class="tag tbd">要確定</span></dd>
     <dt>GFP処理レスポンス 0.5秒は仮置き</dt>
     <dd>実績値が無いため必要スレッド数算定に用いた0.5秒を仮置き。性能リソース設計書で最終確認。<span class="tag tbd">要確定</span></dd>
     <dt>閾値の出典資料に依存</dt>
