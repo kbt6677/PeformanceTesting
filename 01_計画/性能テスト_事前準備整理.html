@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>性能テスト 事前準備整理 ― CBS構築STEP2 / GFP編（3.2.STEP2単独）</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --ink:#1f2933; --sub:#52606d;
+    --line:#d9e2ec; --accent:#2563eb; --accent-soft:#e8f0fe;
+    --warn:#b45309; --warn-soft:#fef3c7; --ok:#047857; --ok-soft:#d1fae5;
+    --danger:#b91c1c; --danger-soft:#fee2e2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7; font-size:15px;
+  }
+  header.page{
+    background:linear-gradient(135deg,#1e3a8a,#2563eb); color:#fff;
+    padding:32px 40px;
+  }
+  header.page h1{margin:0 0 6px; font-size:24px;}
+  header.page p{margin:2px 0; opacity:.92; font-size:14px;}
+  .wrap{max-width:1080px; margin:0 auto; padding:28px 24px 80px;}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:10px 24px; margin-top:14px;
+    font-size:13px; opacity:.95;
+  }
+  .meta b{font-weight:600;}
+  h2.section{
+    font-size:19px; margin:38px 0 14px; padding-left:12px;
+    border-left:5px solid var(--accent);
+  }
+  .lead{
+    background:var(--accent-soft); border:1px solid #c3dafe; border-radius:10px;
+    padding:16px 20px; margin:18px 0; font-size:14px; color:#1e3a8a;
+  }
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:16px;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .card h3{
+    margin:0 0 4px; font-size:16px; display:flex; align-items:center; gap:8px;
+  }
+  .card h3 .num{
+    background:var(--accent); color:#fff; font-size:12px; font-weight:700;
+    width:26px; height:26px; border-radius:50%; display:inline-flex;
+    align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .card .ref{font-size:12px; color:var(--sub); margin:0 0 10px;}
+  ul.check{list-style:none; padding:0; margin:8px 0 0;}
+  ul.check li{
+    position:relative; padding:5px 0 5px 26px; border-top:1px dashed #eceff3; font-size:14px;
+  }
+  ul.check li:first-child{border-top:none;}
+  ul.check li::before{
+    content:"☐"; position:absolute; left:0; top:4px; color:var(--accent); font-size:15px;
+  }
+  .tag{
+    display:inline-block; font-size:11px; font-weight:600; padding:1px 8px;
+    border-radius:20px; margin-left:6px; vertical-align:middle;
+  }
+  .tag.tbd{background:var(--danger-soft); color:var(--danger);}
+  .tag.dep{background:var(--warn-soft); color:var(--warn);}
+  .tag.ext{background:#ede9fe; color:#6d28d9;}
+  table{border-collapse:collapse; width:100%; margin-top:10px; font-size:13.5px;}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  th{background:#eef2f7; font-weight:600;}
+  tbody tr:nth-child(even){background:#fafbfc;}
+  .timeline{position:relative; margin:18px 0 0; padding-left:24px;}
+  .timeline::before{
+    content:""; position:absolute; left:7px; top:6px; bottom:6px; width:2px; background:var(--line);
+  }
+  .tl{position:relative; margin-bottom:18px;}
+  .tl::before{
+    content:""; position:absolute; left:-21px; top:5px; width:12px; height:12px;
+    border-radius:50%; background:var(--accent); border:2px solid #fff; box-shadow:0 0 0 2px var(--accent);
+  }
+  .tl h4{margin:0 0 4px; font-size:15px;}
+  .tl .when{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.04em;}
+  .tl ul{margin:6px 0 0; padding-left:18px; font-size:13.5px; color:var(--sub);}
+  .open dt{font-weight:700; margin-top:12px; color:var(--danger);}
+  .open dt:first-child{margin-top:0;}
+  .open dd{margin:3px 0 0 0; color:var(--sub); font-size:13.5px;}
+  .legend{font-size:12px; color:var(--sub); margin:6px 0 0;}
+  .legend .tag{margin-left:0; margin-right:4px;}
+  footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; color:var(--sub);}
+  @media print{
+    body{background:#fff; font-size:12px;}
+    header.page{background:#1e3a8a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .card,.tag,th{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<header class="page">
+  <h1>性能テスト 事前準備の整理</h1>
+  <p>【CBS構築STEP2】個別テスト計画（GFP編）／メインシート「3.2.STEP2単独」より</p>
+  <div class="meta">
+    <span><b>テスト開始</b>：2025年9月（予定）</span>
+    <span><b>本書作成</b>：2026-06-03 時点の準備整理</span>
+    <span><b>対象</b>：GFP（経由するFEP/FES/DTP含む）</span>
+    <span><b>環境</b>：新東京検証機・本番相当環境（コアアップなし）</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="lead">
+    本書は「9月の性能テストに向けて<b>何を事前に準備すべきか</b>」を計画書から逆算して整理したものです。
+    各カードは準備カテゴリ、チェックボックスは着手・完了管理用です。最後に
+    <b>準備タイムライン</b>と、計画書内に残る<b>確定すべき宿題（未確定事項）</b>をまとめています。
+    <div class="legend" style="margin-top:10px;">
+      凡例：
+      <span class="tag tbd">要確定</span>計画書内で値・方針が未確定
+      <span class="tag dep">前提依存</span>他工程・他資料の完了が前提
+      <span class="tag ext">他チーム</span>NW担当・他システム等との調整が必要
+    </div>
+  </div>
+
+  <h2 class="section">1. 準備カテゴリ別チェックリスト</h2>
+  <div class="grid">
+
+    <div class="card">
+      <h3><span class="num">A</span>テスト環境の構築</h3>
+      <p class="ref">根拠：3.2.1 実施範囲／3.2.7 テスト環境／別紙1・別紙3</p>
+      <ul class="check">
+        <li>新東京検証機に FEP / FES / DTP / GFP 環境を構築</li>
+        <li><b>コアアップを行わない状態</b>であることを確認（前提条件）</li>
+        <li>CBSポータルは本番相当環境（ST1）を準備・接続調整 <span class="tag ext">他チーム</span></li>
+        <li>東阪接続 Shadowbase は東京検証機のみで構成</li>
+        <li>#5用：新大阪検証機シミュレータ＋BT網経由の疎通確保 <span class="tag ext">他チーム</span></li>
+        <li>本番との環境差異を確認・影響評価（別紙1.CBS環境差異）</li>
+        <li>シミュレータ接続先（CAFIS/CARDNET/SPSV/国際NW各社）の構成確定</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">B</span>投入・応答ツールの準備</h3>
+      <p class="ref">根拠：3.2.8 ツール準備（STEP1用／STEP2用）</p>
+      <ul class="check">
+        <li>共通STツールの流用可否を確認し、検証機へ移送</li>
+        <li>STEP1：CAFIS/JCN/SPSV 投入、JENIUS/FES/DTP 応答ツール</li>
+        <li>STEP2：J-LINK/NYCE/DFS/VisaNet/BankNet/AEGN/JCN 投入ツール</li>
+        <li>STEP2：J-LINK/NYCE/DFS/Unionpay/JCN 応答ツール</li>
+        <li><b>#3 ECHO 5000TPS</b> のツール上限を事前検証（不可なら可能件数を確定） <span class="tag tbd">要確定</span></li>
+        <li>各TPS（50/100/5000）での投入能力・安定性を空打ち確認</li>
+        <li>会社コード・機能種別の割当を最新化</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">C</span>テストデータの準備</h3>
+      <p class="ref">根拠：3.2.3.2 データバリエーション</p>
+      <ul class="check">
+        <li>本番想定の取引比率データを用意（共通STデータを再利用）</li>
+        <li>追加分（利用場所・カード種類）は共通ST同方針で新規作成</li>
+        <li>GFP経由取引のみに限定（STEP1のみ経路は投入しない）</li>
+        <li>平常時件数を共通ST比率→投入TPSに割付けて算定</li>
+        <li><b>代行比率</b>（通常／小額／スペシャルカード／障害時）を確定 <span class="tag tbd">要確定</span></li>
+        <li>特異データ：#420障害取消／#302ネガ／#800ECHO を準備</li>
+        <li>FEP↔GFP、GFP→DTP（デトークン）分のデータ確認</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">D</span>測定・取得情報の準備</h3>
+      <p class="ref">根拠：3.2.4(6) 取得情報／3.2.3 実施方法</p>
+      <ul class="check">
+        <li>MEASURE設定（CPU/DISK/DISKFILE/FILE/DISKOPEN・<b>1分間隔</b>）</li>
+        <li>PATHWAY STATS／STATUS SERVER 取得手順を整備</li>
+        <li>TMFCOM / PEEK(PCB) / OSS(SCF) / Shadowbase統計 / DISK統計</li>
+        <li>各ログの<b>テスト前リセット要否</b>を整理（GFP系は「要」）</li>
+        <li>統計クリア→取得のタイミング手順を確立（0分/5分/15分）</li>
+        <li>NW統計（東阪間・STREAM）の取得を担当へ依頼 <span class="tag ext">他チーム</span></li>
+        <li>取得物の保存先・命名規則を決定（05_実行結果へ集約）</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">E</span>合否判定の閾値・基準の確定</h3>
+      <p class="ref">根拠：3.2.4(2)(3)(4)／3.2.6 合格条件</p>
+      <ul class="check">
+        <li>STEP1閾値：要件定義書(非機能要件)_Ver1.0 を入手 <span class="tag dep">前提依存</span></li>
+        <li>STEP2閾値：性能リソース設計書_Ver1.0.xlsx を入手 <span class="tag dep">前提依存</span></li>
+        <li>リソース閾値一覧化（CPU75/60%・メモリ80%・PCB等）</li>
+        <li>レスポンス目標 0.5秒（仮置き）の最終確認 <span class="tag tbd">要確定</span></li>
+        <li>スループット比較用の<b>机上試算 処理可能件数</b>を準備 <span class="tag dep">前提依存</span></li>
+        <li>回線帯域・IP-CLIM・経路/スレッド数の各閾値を確定</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">F</span>実施手順・運用ルール</h3>
+      <p class="ref">根拠：3.2.3 実施方法／3.2.5 ライブラリ管理</p>
+      <ul class="check">
+        <li>実施手順①〜⑨（起動→投入→STATSクリア→取得→停止）を手順書化</li>
+        <li>投入15分／取得は開始5分後から10分間／<b>各3回</b>のルール周知</li>
+        <li>ライブラリは本番用配置のものを使用（各環境で共通）</li>
+        <li>異常時・中断時の切り戻し／再実施手順</li>
+        <li>1回の所要時間を見積り、3回×6パターンの実行枠を算定</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">G</span>体制・スケジュール・調整</h3>
+      <p class="ref">根拠：別紙2.中日程</p>
+      <ul class="check">
+        <li>中日程（別紙2）と9月開始を突合し、逆算スケジュール確定</li>
+        <li>NW担当・CBSポータル/バッチ担当との実施日調整 <span class="tag ext">他チーム</span></li>
+        <li>役割分担（投入・応答・測定・判定）の明確化</li>
+        <li>検証機の占有枠・他テストとの競合確認</li>
+        <li>結果レビュー会・報告のマイルストーン設定</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">H</span>結果記録・分析の枠組み</h3>
+      <p class="ref">根拠：3.2.4 検証方法／3.2.6 合格条件</p>
+      <ul class="check">
+        <li>記録テンプレ作成（3回測定・スループット・レスポンス・リソース）</li>
+        <li>閾値自動判定（OK/NG）の仕組みを用意</li>
+        <li>ボトルネック発見時の対応フロー（解消→再実施→再判定）</li>
+        <li>基準未達時の判断ルール（環境制約か本番影響かの切り分け）</li>
+        <li>報告書フォーマットの雛形を準備（06_分析レポート）</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <h2 class="section">2. 準備タイムライン（6月 → 9月）</h2>
+  <p class="lead" style="background:#fff7ed; border-color:#fed7aa; color:#9a3412;">
+    開始まで約3か月。<b>閾値・代行比率・机上試算</b>などの「要確定」と、<b>環境・ツール</b>の構築は
+    リードタイムが長いため早期着手が要。日付は中日程（別紙2）と突合して確定してください。
+  </p>
+  <div class="timeline">
+    <div class="tl">
+      <div class="when">6月：基盤固め</div>
+      <h4>前提資料の入手と未確定事項のクローズ着手</h4>
+      <ul>
+        <li>性能リソース設計書／要件定義書(非機能)を入手し閾値を一覧化（E）</li>
+        <li>代行比率・机上試算件数の確定依頼を発出（C・E）</li>
+        <li>環境・ツール構築の段取りと体制・日程の初版（A・B・G）</li>
+      </ul>
+    </div>
+    <div class="tl">
+      <div class="when">7月：構築とデータ整備</div>
+      <h4>環境構築・ツール移送・テストデータ作成</h4>
+      <ul>
+        <li>新東京検証機の構築完了、シミュレータ接続確認（A）</li>
+        <li>ツール移送・空打ち、#3 ECHO上限の事前検証（B）</li>
+        <li>テストデータ作成（再利用＋追加分）、代行比率反映（C）</li>
+      </ul>
+    </div>
+    <div class="tl">
+      <div class="when">8月：手順確立とリハーサル</div>
+      <h4>測定環境・手順書・記録テンプレの完成とドライラン</h4>
+      <ul>
+        <li>MEASURE/各統計の取得手順確立、ログリセット手順確認（D）</li>
+        <li>実施手順書・記録/判定テンプレ完成（F・H）</li>
+        <li>1パターンでドライラン→所要時間と手順の妥当性検証</li>
+      </ul>
+    </div>
+    <div class="tl">
+      <div class="when">9月：本番実施</div>
+      <h4>6パターン×各3回の実行・分析・報告</h4>
+      <ul>
+        <li>平常時100TPS＋各特異パターンを実施、取得情報を収集（D）</li>
+        <li>閾値判定・スループット/レスポンス評価（E・H）</li>
+        <li>ボトルネック時は解消→再実施→再判定、報告書作成</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">3. 確定すべき宿題（計画書内の未確定事項）</h2>
+  <p>テスト実行前に値・方針の確定が必要な箇所です。準備の早い段階で潰しておくと手戻りを防げます。</p>
+  <dl class="open">
+    <dt>代行比率の実績値が未入力（#DIV/0!）</dt>
+    <dd>3.2.3.2「表.代行比率」の通常/小額/スペシャルカード/障害時の取引件数・比率が空。テストデータ件数算定の前提となるため要確定。<span class="tag tbd">要確定</span></dd>
+    <dt>ピーク時実績の年月が未定（202x年xx月）</dt>
+    <dd>代行比率の根拠 (*1)「202x年xx月のピーク時実績」が仮表記。どの実績を採用するか確定が必要。<span class="tag tbd">要確定</span></dd>
+    <dt>#3 ECHO 5000TPS のツール制限</dt>
+    <dd>「ツールの制限として投入不可となる場合、可能な限りの件数での確認とする」（2025/12/15追記）。事前に上限を検証し、目標件数を確定。<span class="tag tbd">要確定</span></dd>
+    <dt>GFP処理レスポンス 0.5秒は仮置き</dt>
+    <dd>実績値が無いため必要スレッド数算定に用いた0.5秒を仮置き。性能リソース設計書で最終確認。<span class="tag tbd">要確定</span></dd>
+    <dt>閾値の出典資料に依存</dt>
+    <dd>STEP1=要件定義書(非機能)_Ver1.0、STEP2=性能リソース設計書_Ver1.0.xlsx。両資料の入手・最新版確認が前提。<span class="tag dep">前提依存</span></dd>
+    <dt>JCB#コメント・性能/限界値テスト課題</dt>
+    <dd>シート上に残る「JCB#」レビューコメントや「性能テスト課題」「限界値テスト課題」の指摘事項をクローズ。<span class="tag dep">前提依存</span></dd>
+    <dt>NW統計の取得分担</dt>
+    <dd>東阪間・STREAM接続のNW統計は「NW担当で取得して情報連携を依頼」。依頼ルートと取得タイミングを事前合意。<span class="tag ext">他チーム</span></dd>
+  </dl>
+
+  <footer>
+    出典：【CBS構築STEP2】個別テスト計画(GFP編)_性能テスト_Ver1.2.xlsx ／ シート「3.2.STEP2単独」<br>
+    本書は準備検討の補助資料です。値・日程は計画書本体および関連資料（性能リソース設計書、別紙2.中日程 等）で必ず最新を確認してください。
+  </footer>
+
+</div>
+</body>
+</html>
