@@ -89,41 +89,68 @@
   <!-- ============ 1. 共通比率 ============ -->
   <h2 class="section" id="s1">1. 共通：平常時100TPS 投入電文比率</h2>
   <div class="lead">
-    平常時100TPSの投入電文は、<b>共通性能テストで実施できなかった本番想定比率</b>を採用する。値は計画書
-    <code>3.1.共通ST</code>シート「3.1.3.2 データバリエーション」より取得（本番実績：2024/12・2025/1・2025/2 合算、288TPS基準）。
+    平常時100TPSの投入電文は、<b>本来＝改定前の比率（計画書「表. GFP投入件数」V列「テスト投入件数」/ S列「比率」）</b>を採用する。
+    <b>見直し件数(Y列)は共通STで使った改定後の比率のため不採用</b>。<b>共通ST実施済み分は考慮しない</b>（本来比率の全NWで算出）。
+    本番実績＝MEBIUS取得 2024/12・2025/1・2025/2 合算（108,404,992件＝288TPS基準）。
   </div>
 
   <div class="card">
-    <h3>1-1. NW（被仕向）比率 ＝「表. GFP投入件数」見直し件数ベース</h3>
+    <h3>1-1. NW（被仕向）比率 ＝ 本来比率（改定前・V列）→ 平常時100TPS按分</h3>
     <table>
-      <thead><tr><th>被仕向</th><th>接続</th><th class="num">見直し件数(件/秒, 288TPS時)</th><th class="num">実施比率</th><th class="num">平常時100TPS時(件/秒)</th></tr></thead>
+      <thead><tr><th>被仕向</th><th>接続</th><th class="num">本番実績(件)</th><th class="num">本来比率</th><th class="num">平常時100TPS(件/秒)</th></tr></thead>
       <tbody>
-        <tr><td>VisaNet</td><td>両系</td><td class="num">144.13</td><td class="num">50.0%</td><td class="num">50.0</td></tr>
-        <tr><td>J-Link</td><td>両系/片系</td><td class="num">107.75</td><td class="num">37.4%</td><td class="num">37.4</td></tr>
-        <tr><td>FEP</td><td>両系</td><td class="num">22.88</td><td class="num">7.9%</td><td class="num">7.9</td></tr>
-        <tr><td>CARDNET(1a)</td><td>両系</td><td class="num">13.18</td><td class="num">4.6%</td><td class="num">4.6</td></tr>
-        <tr><td>PA(CBSポータル経由)</td><td>両系</td><td class="num">0.06</td><td class="num">0.02%</td><td class="num">0.02</td></tr>
-        <tr><td><b>合計</b></td><td></td><td class="num"><b>288</b></td><td class="num"><b>100%</b></td><td class="num"><b>100.0</b></td></tr>
+        <tr><td>VisaNet</td><td>両系</td><td class="num">48,100,723</td><td class="num">44.37%</td><td class="num">44.37</td></tr>
+        <tr><td>J-Link</td><td>両系/片系</td><td class="num">40,534,546</td><td class="num">37.39%</td><td class="num">37.39</td></tr>
+        <tr><td>FEP <span class="mini">(CARDNET1aに包含)</span></td><td>両系</td><td class="num">—</td><td class="num">7.94%</td><td class="num">7.94</td></tr>
+        <tr><td>CARDNET(1a)</td><td>両系</td><td class="num">12,917,701</td><td class="num">3.97%</td><td class="num">3.97</td></tr>
+        <tr><td>DFS</td><td>両系</td><td class="num">3,869,401</td><td class="num">3.57%</td><td class="num">3.57</td></tr>
+        <tr><td>BankNet</td><td>両系</td><td class="num">1,865,236</td><td class="num">1.72%</td><td class="num">1.72</td></tr>
+        <tr><td>CARDNET(UP)</td><td>両系</td><td class="num">653,684</td><td class="num">0.60%</td><td class="num">0.60</td></tr>
+        <tr><td>AEGN</td><td>両系</td><td class="num">416,101</td><td class="num">0.38%</td><td class="num">0.38</td></tr>
+        <tr><td>NYCE</td><td>両系</td><td class="num">23,818</td><td class="num">0.02%</td><td class="num">0.02</td></tr>
+        <tr><td>PA(CBSポータル経由)</td><td>両系</td><td class="num">23,782</td><td class="num">0.02%</td><td class="num">0.02</td></tr>
+        <tr><td><b>合計</b></td><td></td><td class="num"><b>108,404,992</b></td><td class="num"><b>100%</b></td><td class="num"><b>100.0</b></td></tr>
       </tbody>
     </table>
-    <p class="mini">※ NYCE/DFS/BankNet/AEGN/CARDNET(UP) は「スケジュール変更により除外」（件数僅少・性能影響微少）。FEPの本番実績件数はCARDNET(1a)に包含。</p>
+    <p class="mini">※ 見直し件数(Y)で「スケジュール変更により除外」されていた NYCE/DFS/BankNet/AEGN/CARDNET(UP) も、<b>本来比率では含める</b>。</p>
   </div>
 
   <div class="card">
-    <h3>1-2. IC/MS 比率（IC100%前提の見直し値） ＆ 有効性確認 仕向先比率</h3>
+    <h3>1-2. IC/MS（MTI相当）区分比率（IC100%前提の見直し値）</h3>
     <table>
-      <thead><tr><th>電文</th><th class="num">比率</th><th style="border-top:none;border-bottom:none;background:#fff;width:30px"></th><th>有効性確認 仕向先</th><th class="num">比率</th></tr></thead>
+      <thead><tr><th>区分（MTI相当）</th><th class="num">比率</th></tr></thead>
       <tbody>
-        <tr><td>ICオーソリ</td><td class="num">67.69%</td><td style="background:#fff;border-top:none;border-bottom:none"></td><td>JENIUS</td><td class="num">62%</td></tr>
-        <tr><td>ICアドバイス</td><td class="num">20.05%</td><td style="background:#fff;border-top:none;border-bottom:none"></td><td>ISS</td><td class="num">38%</td></tr>
-        <tr><td>MS</td><td class="num">12.26%</td><td style="background:#fff;border:none"></td><td></td><td></td></tr>
+        <tr><td>ICオーソリ</td><td class="num">67.69%</td></tr>
+        <tr><td>ICアドバイス</td><td class="num">20.05%</td></tr>
+        <tr><td>MS</td><td class="num">12.26%</td></tr>
       </tbody>
     </table>
-    <p class="mini">※ IC100%前提だが非店舗取引考慮でMS取引も存在。</p>
+    <p class="mini">※ IC100%前提だが非店舗取引考慮でMS取引も存在。<b>「有効性確認要求 仕向先比率（JENIUS62%/ISS38%）」は計画書「表.有効性確認要求仕向先比率」(2023/11/11)が出所だが、トークン有効性確認(TAP)系の別軸かつ共通ST実施済み観点のため、平常時投入比率からは除外</b>。</p>
   </div>
 
   <div class="card">
-    <h3>1-3. デトークン（GFP→DTP）投入比率 ＝「表. DTP投入件数」投入比率（主要分）</h3>
+    <h3>1-3. NW × IC/MS区分 暫定TPS（100TPS時）</h3>
+    <p class="mini">各NWの100TPS値に IC/MS区分比率を乗算した<b>暫定値</b>（IC/MS分布を全NW一律適用）。真のMTI別・NW別データが要る場合は別途取得。</p>
+    <table>
+      <thead><tr><th>被仕向</th><th class="num">100TPS</th><th class="num">ICオーソリ</th><th class="num">ICアドバイス</th><th class="num">MS</th></tr></thead>
+      <tbody>
+        <tr><td>VisaNet</td><td class="num">44.37</td><td class="num">30.03</td><td class="num">8.90</td><td class="num">5.44</td></tr>
+        <tr><td>J-Link</td><td class="num">37.39</td><td class="num">25.31</td><td class="num">7.50</td><td class="num">4.58</td></tr>
+        <tr><td>FEP</td><td class="num">7.94</td><td class="num">5.38</td><td class="num">1.59</td><td class="num">0.97</td></tr>
+        <tr><td>CARDNET(1a)</td><td class="num">3.97</td><td class="num">2.69</td><td class="num">0.80</td><td class="num">0.49</td></tr>
+        <tr><td>DFS</td><td class="num">3.57</td><td class="num">2.42</td><td class="num">0.72</td><td class="num">0.44</td></tr>
+        <tr><td>BankNet</td><td class="num">1.72</td><td class="num">1.16</td><td class="num">0.35</td><td class="num">0.21</td></tr>
+        <tr><td>CARDNET(UP)</td><td class="num">0.60</td><td class="num">0.41</td><td class="num">0.12</td><td class="num">0.07</td></tr>
+        <tr><td>AEGN</td><td class="num">0.38</td><td class="num">0.26</td><td class="num">0.08</td><td class="num">0.05</td></tr>
+        <tr><td>NYCE</td><td class="num">0.02</td><td class="num">0.01</td><td class="num">0.00</td><td class="num">0.00</td></tr>
+        <tr><td>PA</td><td class="num">0.02</td><td class="num">0.01</td><td class="num">0.00</td><td class="num">0.00</td></tr>
+        <tr><td><b>合計</b></td><td class="num"><b>100.0</b></td><td class="num"><b>67.69</b></td><td class="num"><b>20.05</b></td><td class="num"><b>12.26</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>1-4. デトークン（GFP→DTP）投入比率 ＝「表. DTP投入件数」投入比率（主要分）</h3>
     <table>
       <thead><tr><th>被仕向/種別</th><th>取引種別</th><th class="num">投入比率</th></tr></thead>
       <tbody>
@@ -143,6 +170,7 @@
   <!-- ============ 2. ケース別 ============ -->
   <h2 class="section" id="s2">2. ケース別整理（#1〜#6）</h2>
   <p class="mini">各ケース＝【投入条件】【決定事項】【JCB相談QA】【準備】【合格条件】。合格条件は全#で「標準9行」を採用し2行目のみ差替（→付録）。</p>
+  <div class="dec" style="margin-bottom:8px"><b>全ケース共通QA（D-2）：</b>各特異ケースで <b>「平常100TPS＋特異取引を上乗せ追加」</b> なのか、<b>「平常100TPSの一部を特異取引へ置換」</b> なのかを、ケースごとに明確化してJCBと合意する（投入総量・リソース評価の前提が変わるため）。</div>
 
   <!-- #1 -->
   <div class="case done">
@@ -153,8 +181,8 @@
       <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
         <ul class="tight">
           <li>QA1：障害取消はどのACQ/ISSか（→ <b>取引比率（§1-1）で代替可か</b>）</li>
-          <li>QA2：元取引データバリエーション（IC/MS・SP/CS・全取/一部）（→ <b>取引比率で代替可か</b>）</li>
-          <li>QA3：100＋50TPSで合っているか</li>
+          <li>QA2：<b>一部取消はロジック変化が微妙なため、全件「全額取消」でよいか</b>を合意したい（元取引のIC/MS・SP/CS等は取引比率で代替可か）。</li>
+          <li>QA3：100＋50TPSで合っているか（→ 全ケース共通QA：平常100TPS＋追加か、平常の一部を置換か）</li>
         </ul>
       </div>
       <div class="blk"><span class="lbl l-pass">合格条件</span> 標準9行（2行目＝「障害取消大量受信時」）。</div>
@@ -266,21 +294,25 @@
   <!-- ============ 3. スケジュール素案 ============ -->
   <h2 class="section" id="s3">3. #6 細分化とスケジュール素案（土日込み・9月〜12月末）</h2>
   <div class="lead">
-    <b>素案（久保田さんが確定）。</b>方針：<b>土日も稼働前提</b>で本番を前倒し集中、<b>予備を含む全ケースを12月末までに完了</b>。
-    #6を 6a/6b の2実施に分解（6c/6dはQA次第でスキップ吸収、6eは省略）。実施環境は単一のため<b>各ラウンドは直列</b>、検証・分析は次ラウンド実施と並行可。
+    <b>素案（久保田さんが確定）。</b>方針（D-4）：<b>土日のどちらか1日に2ケースずつ</b>実施し、<b>予備枠は基本使う前提</b>（各ケース＝本番＋予備の2回を計画に織込む）。
+    #6を 6a/6b の2実施に分解（6c/6dはQA次第でスキップ、6eは省略）＝対象7ケース。実施環境は単一のため測定日は週1、検証・分析は平日に並行。全工程を<b>12月末までに完了</b>。
   </div>
   <table>
-    <thead><tr><th style="width:78px">ラウンド</th><th>ケース</th><th style="width:120px">実施(3ショット)</th><th style="width:120px">検証</th><th style="width:120px">分析</th></tr></thead>
+    <thead><tr><th style="width:60px">週末測定日</th><th style="width:120px">ケース(各3ショット)</th><th>区分</th><th>検証・分析（平日並行）</th></tr></thead>
     <tbody>
-      <tr><td>本番①</td><td>#1, #2</td><td>9/5〜9/8</td><td>9/9〜9/12</td><td>9/13〜9/16</td></tr>
-      <tr><td>本番②</td><td>#3, #4</td><td>9/19〜9/22</td><td>9/23〜9/26</td><td>9/27〜9/30</td></tr>
-      <tr><td>本番③</td><td>#6a, #6b</td><td>10/3〜10/7</td><td>10/8〜10/11</td><td>10/12〜10/15</td></tr>
-      <tr><td>本番④</td><td>#5（移行リハ後・8月の確認次第）</td><td>10/17〜10/20</td><td>10/21〜10/24</td><td>10/25〜10/28</td></tr>
-      <tr style="background:#fff7ed"><td>予備①〜④</td><td>再実施が必要なケースのみ（#1〜#6 から都度選択）</td><td>11/2〜11/22</td><td>11/9〜11/29</td><td>随時</td></tr>
-      <tr style="background:#eef2f7"><td>結果報告</td><td>整理→作成→再鑑→各レビュー</td><td colspan="3">11/30〜12/26（12月末完了目標）</td></tr>
+      <tr><td>9/6(日)</td><td>#1, #2</td><td>本番</td><td>9/7〜9/12</td></tr>
+      <tr><td>9/13(日)</td><td>#3, #4</td><td>本番</td><td>9/14〜9/19</td></tr>
+      <tr><td>9/20(日)</td><td>#6a, #6b</td><td>本番</td><td>9/21〜9/26</td></tr>
+      <tr><td>9/27(日)</td><td>#5 <span class="mini">(8月確認後・困難なら後ろ倒し)</span></td><td>本番</td><td>9/28〜10/3</td></tr>
+      <tr style="background:#fff7ed"><td>10/4(日)</td><td>#1, #2</td><td>予備</td><td>10/5〜10/10</td></tr>
+      <tr style="background:#fff7ed"><td>10/11(日)</td><td>#3, #4</td><td>予備</td><td>10/12〜10/17</td></tr>
+      <tr style="background:#fff7ed"><td>10/18(日)</td><td>#6a, #6b</td><td>予備</td><td>10/19〜10/24</td></tr>
+      <tr style="background:#fff7ed"><td>10/25(日)</td><td>#5</td><td>予備</td><td>10/26〜10/31</td></tr>
+      <tr style="background:#eef2f7"><td>11/上〜</td><td colspan="3">バッファ（再々実施があれば11月前半の週末で吸収）</td></tr>
+      <tr style="background:#eef2f7"><td>結果報告</td><td colspan="3">11月中旬〜12/26：整理→作成→再鑑→各レビュー（12月末完了目標）</td></tr>
     </tbody>
   </table>
-  <p class="mini">※ 現WBSは本番①〜③（〜10/3）＋予備①〜③（〜11/26）＋結果報告（〜2027/1/8 再鑑）。本素案は #6 を2実施に分け #5 を本番④へ独立させ、<b>結果報告を12月末へ前倒し</b>。土日稼働で各ラウンド間隔を短縮。日付は仮置き（C-2方針）で、久保田さんの調整前提。</p>
+  <p class="mini">※ 各週末は土日のどちらか1日を選択（環境・要員都合で確定）。本番8回＋バッファで7ケース×2回（本番+予備）を9〜10月に収容。日付は仮置き（C-2方針）で久保田さんの調整前提。#5は8月の移行リハ確認次第で順序入替の可能性あり。</p>
 
   <!-- ============ 4. 相談一覧 ============ -->
   <h2 class="section" id="s4">4. JCB相談事項 一覧（ケース単位）</h2>
@@ -288,7 +320,8 @@
   <table>
     <thead><tr><th style="width:60px">ケース</th><th>相談内容（提案ベース）</th><th style="width:200px">こちらの想定／代替案</th></tr></thead>
     <tbody>
-      <tr><td>#1</td><td>障害取消の対象ACQ/ISS、元取引のデータバリエーション、100＋50TPSの妥当性</td><td><b>取引比率（§1-1 NW比率・§1-2 IC/MS比率）に従う</b>提案でよいか</td></tr>
+      <tr style="background:#ecfdf5"><td><b>共通</b></td><td><b>各特異ケースの投入方式：平常100TPSへ「追加上乗せ」か「一部置換」か</b>をケースごとに明確化（D-2）</td><td>原則は平常100TPS＋上乗せ。リソース評価上問題があるケースは置換も検討、として合意</td></tr>
+      <tr><td>#1</td><td>障害取消の対象ACQ/ISS、<b>一部取消ではなく全件「全額取消」でよいか</b>、100＋50TPSの妥当性</td><td>取消は<b>全額取消で統一</b>（一部取消はロジック変化が微妙）。対象ACQ/ISS・元取引バリエーションは取引比率（§1）に従う提案</td></tr>
       <tr><td>#2</td><td>ネガのバリエーション（追加/更新/削除/照会）の選定</td><td>#126の障害時バリエーションに揃える案。<b>直近半年のネガ最大79TPS/最長190秒</b>の実績を共有し150×200の妥当性を確認</td></tr>
       <tr><td>#3</td><td>ECHO対象ACQ、ツール限界を踏まえた投入TPSの確定方針</td><td>Adyen基準（67,282件/30秒・4930TPS/7秒）。<b>同値検証不要・全体DOWN回避が目的</b>で合意。環境制約を踏まえ可能な件数で</td></tr>
       <tr><td>#4</td><td>① TO対象ACQ/ISS ② 平常を全件TOか追加投入か ③ 障害代行の有無</td><td>TO対象は取引比率に従う案。平常全件TO＋TCP_CLOSE方式の理解でよいか。代行ON/OFFの要否</td></tr>
@@ -333,7 +366,8 @@
       <tr><td>ステータス(R)</td><td>運用開始（進捗可視化）。現状の完了はNo4のみ。</td></tr>
       <tr><td>結果報告 日付(No73-81)</td><td><b>未知数のため適当に期間を決めて提案 → その通り埋める（C-2）</b>。日付には重心を置かない。§3スケジュールに合わせ12月末完了で仮置き。</td></tr>
       <tr><td>重複タスク名</td><td>No14・15「疎通確認：GFPのみ投入」、No19・21「実施・確認」を識別可能な名称へ是正。</td></tr>
-      <tr><td>#6 細分化</td><td>#6a/#6b を別タスク化（必要なら#5を本番④へ独立）。§3素案を反映。</td></tr>
+      <tr><td>#6 細分化</td><td>#6a/#6b を別タスク化（#5も独立）。対象7ケース。§3素案を反映。</td></tr>
+      <tr><td>予備枠/実施日</td><td><b>予備枠は基本使う前提で最適化（D-4）</b>：各ケース＝本番＋予備の2回を計画に織込む。<b>土日のどちらか1日に2ケースずつ</b>実施（週1測定日）。</td></tr>
       <tr><td>準備タスク追加</td><td><b>MEASURE/統計 取得OBEY作成・試走</b>（§5-1）を「実施・検証手順」配下に追加。</td></tr>
     </tbody>
   </table>
