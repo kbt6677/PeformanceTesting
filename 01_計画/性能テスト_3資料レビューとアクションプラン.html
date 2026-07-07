@@ -3,155 +3,397 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>性能テスト 3資料レビュー＆アクションプラン（STEP2単独/GFP）</title>
+<title>CBS構築STEP2 単独性能テスト（GFP）｜ケース別整理＆アクションプラン</title>
 <style>
-  :root{--bg:#f5f7fa;--card:#fff;--ink:#1f2933;--sub:#52606d;--line:#d9e2ec;--accent:#2563eb;
-    --red:#b91c1c;--red-s:#fee2e2;--org:#b45309;--org-s:#fef3c7;--grn:#047857;--grn-s:#d1fae5;--blu-s:#e8f0fe;}
+  :root{
+    --bg:#f4f6f9;--card:#fff;--ink:#1f2933;--sub:#52606d;--line:#d9e2ec;--accent:#2563eb;
+    --red:#b91c1c;--red-s:#fee2e2;--org:#b45309;--org-s:#fef3c7;--grn:#047857;--grn-s:#d1fae5;
+    --blu:#1e40af;--blu-s:#e8f0fe;--gry-s:#eef2f7;--pur:#6d28d9;--pur-s:#ede9fe;
+  }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;font-size:14.5px;}
+  body{margin:0;font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;font-size:14.5px;}
   header.page{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:30px 40px;}
-  header.page h1{margin:0 0 6px;font-size:23px;}
-  header.page p{margin:2px 0;opacity:.92;font-size:13px;}
-  .wrap{max-width:1100px;margin:0 auto;padding:26px 22px 80px;}
-  h2.section{font-size:19px;margin:36px 0 12px;padding-left:11px;border-left:5px solid var(--accent);}
+  header.page h1{margin:0 0 8px;font-size:22px;}
+  header.page p{margin:2px 0;opacity:.93;font-size:13px;}
+  .wrap{max-width:1160px;margin:0 auto;padding:26px 22px 90px;}
+  h2.section{font-size:19px;margin:42px 0 12px;padding:6px 0 6px 12px;border-left:5px solid var(--accent);}
   .lead{background:var(--blu-s);border:1px solid #c3dafe;border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13.5px;color:#1e3a8a;}
   table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;}
   th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
-  th{background:#eef2f7;font-weight:600;}
+  th{background:var(--gry-s);font-weight:600;}
   tbody tr:nth-child(even){background:#fafbfc;}
-  .sev{font-weight:700;text-align:center;white-space:nowrap;border-radius:5px;}
-  .s-red{background:var(--red-s);color:var(--red);}
-  .s-org{background:var(--org-s);color:var(--org);}
-  .s-grn{background:var(--grn-s);color:var(--grn);}
-  code{background:#eef2f7;padding:1px 5px;border-radius:4px;font-size:12.5px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:12px 0;box-shadow:0 1px 2px rgba(15,23,42,.04);}
-  .card h3{margin:0 0 8px;font-size:15px;}
-  .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:20px;}
-  .t-red{background:var(--red-s);color:var(--red);}
-  .t-org{background:var(--org-s);color:var(--org);}
-  .t-blu{background:var(--blu-s);color:#1e40af;}
-  .good{background:var(--grn-s);border:1px solid #a7f3d0;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:13.5px;color:#065f46;}
-  footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--sub);}
-  @media print{body{background:#fff;font-size:11px;}header.page{-webkit-print-color-adjust:exact;print-color-adjust:exact;}th,.sev,.tag{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+  td.num,th.num{text-align:right;white-space:nowrap;}
+  code{background:var(--gry-s);padding:1px 6px;border-radius:4px;font-size:12.5px;color:#9a3412;}
+  .case{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0;margin:18px 0;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.05);}
+  .case>.h{padding:12px 18px;font-size:16px;font-weight:700;color:#fff;background:#334155;display:flex;justify-content:space-between;align-items:center;}
+  .case>.b{padding:14px 18px;}
+  .case.done>.h{background:linear-gradient(90deg,#047857,#059669);}
+  .case.warn>.h{background:linear-gradient(90deg,#b45309,#d97706);}
+  .case.open>.h{background:linear-gradient(90deg,#b91c1c,#dc2626);}
+  .case.info>.h{background:linear-gradient(90deg,#1e40af,#2563eb);}
+  .st{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;background:rgba(255,255,255,.22);}
+  .blk{margin:10px 0;}
+  .blk .lbl{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:5px;margin-bottom:4px;}
+  .l-cond{background:var(--gry-s);color:var(--sub);}
+  .l-dec{background:var(--grn-s);color:var(--grn);}
+  .l-qa{background:var(--org-s);color:var(--org);}
+  .l-prep{background:var(--blu-s);color:var(--blu);}
+  .l-pass{background:var(--pur-s);color:var(--pur);}
+  ul.tight{margin:4px 0 4px 0;padding-left:20px;}
+  ul.tight li{margin:3px 0;}
+  .dec{background:var(--grn-s);border:1px solid #a7f3d0;border-radius:8px;padding:8px 12px;font-size:13px;color:#065f46;}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:20px;margin-right:3px;}
+  .t-red{background:var(--red-s);color:var(--red);}.t-org{background:var(--org-s);color:var(--org);}
+  .t-grn{background:var(--grn-s);color:var(--grn);}.t-blu{background:var(--blu-s);color:var(--blu);}.t-gry{background:var(--gry-s);color:var(--sub);}
+  .mini{font-size:12px;color:var(--sub);}
+  .toc{columns:2;column-gap:28px;font-size:13px;}
+  .toc a{color:var(--accent);text-decoration:none;} .toc a:hover{text-decoration:underline;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:14px 0;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .badge{display:inline-block;min-width:30px;text-align:center;font-weight:700;border-radius:5px;padding:1px 7px;}
+  .b-red{background:var(--red-s);color:var(--red);}.b-org{background:var(--org-s);color:var(--org);}
+  .b-grn{background:var(--grn-s);color:var(--grn);}.b-gry{background:var(--gry-s);color:var(--sub);}
+  footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--sub);}
+  @media print{body{background:#fff;font-size:11px;}header.page,.case>.h,.dec{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.case{break-inside:avoid;}}
+  @media(max-width:680px){.toc{columns:1;}}
 </style>
 </head>
 <body>
 <header class="page">
-  <h1>性能テスト 3資料レビュー ＆ アクションプラン</h1>
-  <p>対象：① 個別テスト計画(GFP編)_性能テスト Ver1.2 ／ ② テストケース一覧 ST Ver.0.6 ／ ③ CBS構築 WBS</p>
-  <p>作成：2026-06-16 ｜ スコープ：CBS構築STEP2 単独性能テスト（GFP）</p>
+  <h1>CBS構築STEP2 単独性能テスト（GFP）｜ケース別整理 ＆ アクションプラン</h1>
+  <p>対象資料：① 計画(GFP編) Ver1.2 ／ ② テストケース ST Ver.0.6 ／ ③ CBS構築 WBS ／ ④ 計画 共通STシート（投入比率）</p>
+  <p>前提：新東京検証機・本番相当・コアアップなし／縮退（片系）8CPU・2コア／GFP経由取引のみ投入／平常時100TPS（#5除く）</p>
+  <p>作成日：2026-06-16 ｜ 久保田さん指示（2026-06-16）の決定事項を反映</p>
 </header>
 <div class="wrap">
 
   <div class="lead">
-    3資料を横断で突き合わせた結果、<b>ファイル間の不整合が複数</b>見つかりました。重要度の高い順に
-    「A. 資料間の不整合 → B. テストケースの論点 → C. WBSの修正点」を整理し、最後に
-    <b>優先度・期限つきアクションプラン</b>をまとめます。重要度：<span class="tag t-red">最優先</span>
-    <span class="tag t-org">高/中</span> <span class="tag t-blu">参考</span>
+    久保田さんの決定・方針を各ケースに織り込み、<b>テストケース単位</b>で整理し直しました。決定事項の永続記録は
+    <code>01_計画/検討メモ_決定事項ログ.md</code> に保存済（別セッションでも引継ぎ可）。<br>
+    凡例：<span class="tag t-grn">確定</span><span class="tag t-org">相談中/要整理</span><span class="tag t-red">未確定</span><span class="tag t-blu">保留</span>
   </div>
 
-  <h2 class="section">A. 資料間の不整合（最優先）</h2>
+  <div class="card">
+    <h3>目次</h3>
+    <div class="toc">
+      <a href="#s1">1. 共通：平常時100TPS 投入電文比率（NW/IC・MS/デトークン）</a><br>
+      <a href="#s2">2. ケース別整理（#1〜#6）</a><br>
+      <a href="#s3">3. #6 細分化とスケジュール素案（土日込み・9月〜12月末）</a><br>
+      <a href="#s4">4. JCB相談事項 一覧（ケース単位）</a><br>
+      <a href="#s5">5. 共通準備タスク（MEASURE/OBEY 自前化 ほか）</a><br>
+      <a href="#s6">6. WBS対応方針（決定反映）</a><br>
+      <a href="#s7">付録. 標準合格条件「9行」</a>
+    </div>
+  </div>
+
+  <!-- ============ 1. 共通比率 ============ -->
+  <h2 class="section" id="s1">1. 共通：平常時100TPS 投入電文比率</h2>
+  <div class="lead">
+    平常時100TPSの投入電文は、<b>本来＝改定前の比率（計画書「表. GFP投入件数」V列「テスト投入件数」/ S列「比率」）</b>を採用する。
+    <b>見直し件数(Y列)は共通STで使った改定後の比率のため不採用</b>。<b>共通ST実施済み分は考慮しない</b>（本来比率の全NWで算出）。
+    本番実績＝MEBIUS取得 2024/12・2025/1・2025/2 合算（108,404,992件＝288TPS基準）。
+  </div>
 
   <div class="card">
-    <h3><span class="tag t-red">最優先</span> A-1. #2 ネガデータの投入条件が「計画書」と「テストケース」で不一致</h3>
+    <h3>1-1. NW（被仕向）比率 ＝ 本来比率（改定前・V列）→ 平常時100TPS按分（最低1TPS補正）</h3>
     <table>
-      <tr><th>資料</th><th>#2 ネガ(#302)の投入条件</th></tr>
-      <tr><td>① 計画書 Ver1.2 本文（R107）</td><td><code>100TPS × 30秒</code></td></tr>
-      <tr><td>② テストケース #2</td><td><code>150TPS × 200秒</code>（ToDo#126準拠）</td></tr>
-      <tr><td>参考：ToDo#126（JCB要望）</td><td><code>150TPS × 200秒</code></td></tr>
+      <thead><tr><th>被仕向</th><th>接続</th><th class="num">本番実績(件)</th><th class="num">本来比率</th><th class="num">100TPS(素)</th><th class="num">補正後(最低1TPS)</th></tr></thead>
+      <tbody>
+        <tr><td>VisaNet</td><td>両系</td><td class="num">48,100,723</td><td class="num">44.37%</td><td class="num">44.37</td><td class="num">42.9</td></tr>
+        <tr><td>J-Link</td><td>両系/片系</td><td class="num">40,534,546</td><td class="num">37.39%</td><td class="num">37.39</td><td class="num">36.3</td></tr>
+        <tr><td>FEP <span class="mini">(CARDNET1aに包含)</span></td><td>両系</td><td class="num">—</td><td class="num">7.94%</td><td class="num">7.94</td><td class="num">7.7</td></tr>
+        <tr><td>CARDNET(1a)</td><td>両系</td><td class="num">12,917,701</td><td class="num">3.97%</td><td class="num">3.97</td><td class="num">3.9</td></tr>
+        <tr><td>DFS</td><td>両系</td><td class="num">3,869,401</td><td class="num">3.57%</td><td class="num">3.57</td><td class="num">3.5</td></tr>
+        <tr><td>BankNet</td><td>両系</td><td class="num">1,865,236</td><td class="num">1.72%</td><td class="num">1.72</td><td class="num">1.7</td></tr>
+        <tr><td>CARDNET(UP)</td><td>両系</td><td class="num">653,684</td><td class="num">0.60%</td><td class="num">0.60</td><td class="num">1.0</td></tr>
+        <tr><td>AEGN</td><td>両系</td><td class="num">416,101</td><td class="num">0.38%</td><td class="num">0.38</td><td class="num">1.0</td></tr>
+        <tr><td>NYCE</td><td>両系</td><td class="num">23,818</td><td class="num">0.02%</td><td class="num">0.02</td><td class="num">1.0</td></tr>
+        <tr><td>PA(CBSポータル経由)</td><td>両系</td><td class="num">23,782</td><td class="num">0.02%</td><td class="num">0.02</td><td class="num">1.0</td></tr>
+        <tr><td><b>合計</b></td><td></td><td class="num"><b>108,404,992</b></td><td class="num"><b>100%</b></td><td class="num"><b>100.0</b></td><td class="num"><b>100.0</b></td></tr>
+      </tbody>
     </table>
-    ToDo#126は「計画書反映済でCLOSE」とされていましたが、<b>計画書本文Ver1.2は旧値（100TPS×30秒）のまま</b>です。
-    テストケースは新値（150×200）。→ <b>計画書本文をToDo#126の値に更新</b>し、両資料を一致させる必要があります。
+    <p class="mini">※ 見直し件数(Y)で除外されていた NYCE/DFS/BankNet/AEGN/CARDNET(UP) も本来比率では含める。<b>補正＝0TPSのNWを作らないため、1TPS未満を一律1TPSへ引上げ、増分を大口NW（VisaNet/J-Link…）から比例的に差引いて合計100TPSを維持</b>（VisaNetで端数調整）。</p>
   </div>
 
   <div class="card">
-    <h3><span class="tag t-red">最優先</span> A-2. 代行比率（計画書）が <code>#DIV/0!</code> のまま未確定</h3>
-    計画書「表. 代行比率」（R168〜172）が全行 <code>#DIV/0!</code>（実績値未入力）。
-    これが埋まらないと <b>#6(a) 代行機能性能測定のTPS／テストデータ件数の前提が立ちません</b>。
-    ToDo#126①の「直近の同一ISS最大TPS」を基準に実績値を確定させる必要があります。
-  </div>
-
-  <div class="card">
-    <h3><span class="tag t-org">高</span> A-3. #6 の粒度が「テストケース＝4本」「WBS＝1本」で不一致</h3>
+    <h3>1-2. IC/MS（MTI相当）区分比率（IC100%前提の見直し値）</h3>
     <table>
-      <tr><th>資料</th><th>#6 の扱い</th></tr>
-      <tr><td>テストケース</td><td>#6を4サブケースに展開：<b>代行機能性能測定／限界値評価／全取引投入評価／TLS1.2対応</b>（いずれも枝番6）</td></tr>
-      <tr><td>WBS</td><td>本番③で <b>#6＝1ブロック（実施2日）</b> のみ。4サブの内訳なし</td></tr>
+      <thead><tr><th>区分（MTI相当）</th><th class="num">比率</th></tr></thead>
+      <tbody>
+        <tr><td>ICオーソリ</td><td class="num">67.69%</td></tr>
+        <tr><td>ICアドバイス</td><td class="num">20.05%</td></tr>
+        <tr><td>MS</td><td class="num">12.26%</td></tr>
+      </tbody>
     </table>
-    WBSの#6が<b>4サブテストを実施2日で消化する想定</b>になっており、工数・日程が過小の懸念。
-    → WBSに#6サブを反映するか、実施計画（所要・要員）を見直す。
+    <p class="mini">※ IC100%前提だが非店舗取引考慮でMS取引も存在。<b>「有効性確認要求 仕向先比率（JENIUS62%/ISS38%）」は計画書「表.有効性確認要求仕向先比率」(2023/11/11)が出所だが、トークン有効性確認(TAP)系の別軸かつ共通ST実施済み観点のため、平常時投入比率からは除外</b>。</p>
   </div>
 
-  <h2 class="section">B. テストケース側の論点・修正点</h2>
+  <div class="card">
+    <h3>1-3. NW × IC/MS区分 暫定TPS（補正後100TPS時）</h3>
+    <p class="mini">各NWの<b>補正後</b>TPSに IC/MS区分比率を乗算した<b>暫定値</b>（IC/MS分布を全NW一律適用）。真のMTI別・NW別データが要る場合は別途取得。</p>
+    <table>
+      <thead><tr><th>被仕向</th><th class="num">補正後TPS</th><th class="num">ICオーソリ</th><th class="num">ICアドバイス</th><th class="num">MS</th></tr></thead>
+      <tbody>
+        <tr><td>VisaNet</td><td class="num">42.9</td><td class="num">29.04</td><td class="num">8.60</td><td class="num">5.26</td></tr>
+        <tr><td>J-Link</td><td class="num">36.3</td><td class="num">24.57</td><td class="num">7.28</td><td class="num">4.45</td></tr>
+        <tr><td>FEP</td><td class="num">7.7</td><td class="num">5.21</td><td class="num">1.54</td><td class="num">0.94</td></tr>
+        <tr><td>CARDNET(1a)</td><td class="num">3.9</td><td class="num">2.64</td><td class="num">0.78</td><td class="num">0.48</td></tr>
+        <tr><td>DFS</td><td class="num">3.5</td><td class="num">2.37</td><td class="num">0.70</td><td class="num">0.43</td></tr>
+        <tr><td>BankNet</td><td class="num">1.7</td><td class="num">1.15</td><td class="num">0.34</td><td class="num">0.21</td></tr>
+        <tr><td>CARDNET(UP)</td><td class="num">1.0</td><td class="num">0.68</td><td class="num">0.20</td><td class="num">0.12</td></tr>
+        <tr><td>AEGN</td><td class="num">1.0</td><td class="num">0.68</td><td class="num">0.20</td><td class="num">0.12</td></tr>
+        <tr><td>NYCE</td><td class="num">1.0</td><td class="num">0.68</td><td class="num">0.20</td><td class="num">0.12</td></tr>
+        <tr><td>PA</td><td class="num">1.0</td><td class="num">0.68</td><td class="num">0.20</td><td class="num">0.12</td></tr>
+        <tr><td><b>合計</b></td><td class="num"><b>100.0</b></td><td class="num"><b>67.70</b></td><td class="num"><b>20.04</b></td><td class="num"><b>12.25</b></td></tr>
+      </tbody>
+    </table>
+    <p class="mini">※ 補正により最小NWでもICオーソリ0.68/ICアドバイス0.20/MS0.12 となり、<b>0TPSのセルは解消</b>。</p>
+  </div>
 
+  <div class="card">
+    <h3>1-4. デトークン（GFP→DTP）投入比率 ＝「表. DTP投入件数」投入比率（主要分）</h3>
+    <table>
+      <thead><tr><th>被仕向/種別</th><th>取引種別</th><th class="num">投入比率</th></tr></thead>
+      <tbody>
+        <tr><td>TAP</td><td>トークン状態変更通知要求</td><td class="num">31.51%</td></tr>
+        <tr><td>TMP</td><td>PushToken要求</td><td class="num">25.38%</td></tr>
+        <tr><td>FEP</td><td>デトークン要求(プロセス間通信)</td><td class="num">13.30%</td></tr>
+        <tr><td>JENIUS</td><td>トークン取引オーソリ結果通知要求</td><td class="num">12.10%</td></tr>
+        <tr><td>CARDNET(MQ)</td><td>デトークン要求(ISS-MQ)</td><td class="num">9.10%</td></tr>
+        <tr><td>TMP</td><td>DeviceTokenStatusChange要求</td><td class="num">4.31%</td></tr>
+        <tr><td>CARDNET(CN)</td><td>トークン取引オーソリ結果通知要求(JCN-CN)</td><td class="num">2.16%</td></tr>
+        <tr><td>TAP</td><td>トークンカード有効性確認要求</td><td class="num">2.14%</td></tr>
+      </tbody>
+    </table>
+    <p class="mini">※ 全取引種別の合計100%。詳細は計画書「3.1.共通ST」表. DTP投入件数 参照。</p>
+  </div>
+
+  <!-- ============ 2. ケース別 ============ -->
+  <h2 class="section" id="s2">2. ケース別整理（#1〜#6）</h2>
+  <p class="mini">各ケース＝【投入条件】【決定事項】【JCB相談QA】【準備】【合格条件】。合格条件は全#で「標準9行」を採用し2行目のみ差替（→付録）。</p>
+  <div class="dec" style="margin-bottom:8px"><b>全ケース共通QA（D-2）：</b>各特異ケースで <b>「平常100TPS＋特異取引を上乗せ追加」</b> なのか、<b>「平常100TPSの一部を特異取引へ置換」</b> なのかを、ケースごとに明確化してJCBと合意する（投入総量・リソース評価の前提が変わるため）。</div>
+
+  <!-- #1 -->
+  <div class="case done">
+    <div class="h"><span>#1 同一会員に対する障害取消大量受信</span><span class="st">確定</span></div>
+    <div class="b">
+      <div class="blk"><span class="lbl l-cond">投入条件</span><br>片系/8CPU2コア/通常（非代行）。<b>平常100TPS ＋ 特定ACQからの障害取消(#420) 50TPS（同一会員宛・同時上乗せ）</b>。</div>
+      <div class="blk"><span class="lbl l-prep">準備</span><br>元取引電文＋取消電文 <code>50TPS×60s×10m×2倍＝60,000件</code>（再利用難なら×3＝180,000件）。<b>事前に元取引投入が必要</b>。原取引は承認後取引で実施。</div>
+      <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
+        <ul class="tight">
+          <li>QA1：障害取消はどのACQ/ISSか（→ <b>取引比率（§1-1）で代替可か</b>）</li>
+          <li>QA2：<b>一部取消はロジック変化が微妙なため、全件「全額取消」でよいか</b>を合意したい（元取引のIC/MS・SP/CS等は取引比率で代替可か）。</li>
+          <li>QA3：100＋50TPSで合っているか（→ 全ケース共通QA：平常100TPS＋追加か、平常の一部を置換か）</li>
+        </ul>
+      </div>
+      <div class="blk"><span class="lbl l-pass">合格条件</span> 標準9行（2行目＝「障害取消大量受信時」）。</div>
+    </div>
+  </div>
+
+  <!-- #2 -->
+  <div class="case done">
+    <div class="h"><span>#2 特定被仕向からの大量データ受信（ネガデータ）</span><span class="st">確定（150×200）</span></div>
+    <div class="b">
+      <div class="blk"><span class="lbl l-cond">投入条件</span><br>片系/8CPU2コア/通常。<b>平常100TPS ＋ 特定被仕向ACQ(J-Link)からネガデータ電文(#302) 150TPS×200秒</b>（#302はJ-Linkのみで自明）。</div>
+      <div class="dec"><b>決定（A-1）：</b>QA#126にて <b>150TPS×200秒で確定</b>。根拠＝(1)過去障害時50TPS×30秒継続で障害発生 (2)直近半年(24/12〜25/5)ネガ最大79TPS(5/20 J_MANDI_1_IF)・最長継続190秒(5/11 J_BDO_3_IF, 当時平均3TPS)。将来の負荷増を踏まえ150×200。<br>
+        ※計画書F107は現Ver1.2では <code>100×30</code> のまま → <b>150×200への反映確認のみ</b>（QA#126では「計画書最新化で対応済」とされるが現ファイル未反映のため要確認）。</div>
+      <div class="blk"><span class="lbl l-prep">準備</span><br>ネガ電文 <code>150TPS×200s＝30,000件</code>（照会系は3ショット再利用可、更新系は状態変化で再生成要）。</div>
+      <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
+        <ul class="tight">
+          <li>QA1：ネガのバリエーション（追加/更新/削除/照会）をどうするか（#126の障害時バリエーションに揃えるか）</li>
+        </ul>
+      </div>
+      <div class="blk"><span class="lbl l-pass">合格条件</span> 標準9行（2行目＝「ネガデータ大量受信時」）。</div>
+    </div>
+  </div>
+
+  <!-- #3 -->
+  <div class="case done">
+    <div class="h"><span>#3 特定被仕向からの大量データ受信（ECHO）</span><span class="st">確定</span></div>
+    <div class="b">
+      <div class="blk"><span class="lbl l-cond">投入条件</span><br>片系/8CPU2コア/通常。<b>平常100TPS ＋ 特定ACQからecho電文(#800) 5000TPS×10秒</b>（ツール上限に合わせ確定。計画書F112「ツール制限時は可能な限りの件数」追記済）。</div>
+      <div class="dec"><b>確認方針（QA#126）：</b>障害事象＝Adyen ACQから全67,282件/30秒・最大4930TPS/7秒。<b>同値検証は不要</b>、特定提携先の想定外データでGFP全体DOWNに繋がらないことの確認が目的。環境制約を踏まえ検証可能な方針をJCBと確認。</div>
+      <div class="blk"><span class="lbl l-prep">準備</span><br>echo電文 <code>5000TPS×10s＝50,000件</code>。<b>ツールが5000TPS出せるか事前検証必須</b>。</div>
+      <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
+        <ul class="tight">
+          <li>QA1：ECHOはどのACQか（#126ではAdyen）</li>
+          <li>QA2：投入TPSはツール限界を見てから確定でOKか（環境制約を踏まえた検証可能方針の確認）</li>
+        </ul>
+      </div>
+      <div class="blk"><span class="lbl l-pass">合格条件</span> 標準9行 ＋「echo大量受信時もGFP全体がDOWNせず平常取引が継続できること」を追記済（ST O10）。</div>
+    </div>
+  </div>
+
+  <!-- #4 -->
+  <div class="case open">
+    <div class="h"><span>#4 仕向先応答遅延発生</span><span class="st">未確定（JCB相談）</span></div>
+    <div class="b">
+      <div class="blk"><span class="lbl l-cond">投入条件</span><br>片系/8CPU2コア/<b>代行有無＝要確認</b>。平常100TPS、特定の仕向ISSを無応答にし全件タイムアウト（計画書F115）。</div>
+      <div class="dec"><b>方針（B-4）：</b>各種QAでJCBに相談する。具体的な相談内容は <b>§4 相談一覧</b> に整理。</div>
+      <div class="blk"><span class="lbl l-prep">準備</span><br>TO発生方法＝応答TOOLダウンは正常取引も影響 → <b>特定IFに絞ってTCP_CLOSEがベスト案</b>。代行発生時はテーブル設定で「障害時代行ON」を特定ISS-IDに事前準備。</div>
+      <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
+        <ul class="tight">
+          <li>QA1：タイムアウトさせるACQ/ISS（→取引比率で代替可か）</li>
+          <li>QA2：平常を全件タイムアウトにするか追加投入か（平常全件タイムアウトの理解でよいか）</li>
+          <li>QA3：障害代行を発生させるか（代行有無）</li>
+        </ul>
+      </div>
+      <div class="blk"><span class="lbl l-pass">合格条件</span> 標準9行（タイムアウトは意図的＝想定内エラー許容の調整が必要）。</div>
+    </div>
+  </div>
+
+  <!-- #5 -->
+  <div class="case info">
+    <div class="h"><span>#5 国際NW性能測定</span><span class="st">保留（8月確認）</span></div>
+    <div class="b">
+      <div class="blk"><span class="lbl l-cond">投入条件</span><br>片系/8CPU2コア/通常。<b>平常100TPSなし</b>。新大阪検証機SimからBT網経由で東京検証機へ <b>50TPS</b>（計画書F119/F120）。</div>
+      <div class="dec"><b>方針（B-5）：</b>投入方法は<b>即答不可</b>（移行リハーサル未実施のため）。<b>優先度は準備後半＝8月頃に確認</b>。移行Tから情報入手。</div>
+      <div class="blk"><span class="lbl l-prep">準備</span><br>大阪ノード環境準備＋投入ツール準備（移行Tから情報入手必須）。</div>
+      <div class="blk"><span class="lbl l-qa">JCB相談QA</span>
+        <ul class="tight"><li>QA1：BT経由で流す取引のACQ/ISS・データバリエーションは取引比率依存か</li></ul>
+      </div>
+      <div class="blk"><span class="lbl l-pass">合格条件</span> <b>一旦現状のまま（B-8）</b>。平常ベースなしのため2行目は不適合だが当面このまま（必要ならNW性能寄りに調整）。</div>
+    </div>
+  </div>
+
+  <!-- #6 -->
+  <div class="case warn">
+    <div class="h"><span>#6 共通ST残項目（4サブケースに細分化）</span><span class="st">要整理</span></div>
+    <div class="b">
+      <div class="dec"><b>方針（A-3）：</b>ケース数を増やして整理（久保田）。スケジュール素案は §3。</div>
+
+      <div class="blk"><span class="lbl l-cond">#6a 代行機能性能測定</span> <span class="tag t-grn">作成済</span><br>
+        片系/2コア/代行。平常100TPS？＋代行対象ISS宛取引を代行TPS（直近同一ISS最大TPS基準）。<br>
+        <span class="dec" style="display:block;margin-top:6px"><b>決定（A-2）：</b>代行比率(#DIV/0!)は<b>テストケース6-1-1 QA1に紐付け</b>。<b>久保田がJCBと合意</b>する。<br>
+          QA1：ToDo#126①＝直近の同一ISS最大TPSを基準に各種代行比率（通常処理/少額取引代行/SPカード代行/障害時代行）を算出でOKか。</span>
+        <ul class="tight" style="margin-top:6px">
+          <li>QA2：通常取引は100TPSに含むか、QA1のTPSから非代行/代行比率を求めて投入か。</li>
+          <li>★ToDo#126①は片系・両系両方を要求（方針は片系のみ）→要確認。</li>
+        </ul>
+        <span class="lbl l-pass">合格条件</span> <b>後で（B-7）</b>。現行J/B（両系180/片系260TPS）から大幅劣化なしを追記予定。</div>
+
+      <div class="blk"><span class="lbl l-cond">#6b 限界値評価</span> <span class="tag t-grn">作成済</span><br>
+        片系/2コア/通常。数点TPS（例100/200/300）で各点測定、リソース限界が先なら終了。<br>
+        <span class="dec" style="display:block;margin-top:6px"><b>追加観点（指示）：</b>限界値テストで<b>電文ログの物理ファイルのパーティション分割の最適化</b>にも触れる。観点・準備に明記し、限界時のI/O・ログ書込ボトルネックの緩和策として評価する。</span>
+        <ul class="tight" style="margin-top:6px">
+          <li>準備：Visa/J-Link通信はprocess数増が必要と共通STで判明 → <b>SKEL修正要</b>。</li>
+          <li>準備：<b>電文ログ物理ファイルのパーティション分割の最適化</b>（分割数・配置の見直し）。</li>
+          <li>QA1：数点TPSの基準　QA2：「リソース限界を先に迎えた時点」＝性能閾値超過の意味でOKか（現行J/B片系260TPSから大幅劣化なしを指標／事前検証で限界TPS確定→本番1ケースで実施でOKか）。</li>
+        </ul>
+        <span class="lbl l-pass">合格条件</span> <b>後で（B-7）</b>。</div>
+
+      <div class="blk"><span class="lbl l-cond">#6c 全取引投入評価</span> <span class="tag t-org">スキップ判断（B-9）</span><br>
+        全経路投入は他ケースで取引比率に従い投入できているため解消済の想定。<b>QAに従い確認</b>（§4）。</div>
+
+      <div class="blk"><span class="lbl l-cond">#6d TLS1.2対応</span> <span class="tag t-org">スキップ判断（B-9）</span><br>
+        片系/2コア/通常。TLS1.2有効化接続に平常100TPS相当（上乗せなし）。接続状態のため他ケースで吸収できればスキップ可。<b>QAに従い確認</b>（§4）。</div>
+
+      <div class="blk"><span class="lbl l-cond">#6e 高負荷ボトルネック検出</span> <span class="tag t-gry">省略</span><br>(b)限界値評価と同等のため省略（計画書F128）。</div>
+    </div>
+  </div>
+
+  <!-- ============ 3. スケジュール素案 ============ -->
+  <h2 class="section" id="s3">3. #6 細分化とスケジュール素案（土日込み・9月〜12月末）</h2>
+  <div class="lead">
+    <b>素案（久保田さんが確定）。</b>方針（D-4）：<b>土日のどちらか1日に2ケースずつ</b>実施し、<b>予備枠は基本使う前提</b>（各ケース＝本番＋予備の2回を計画に織込む）。
+    #6を 6a/6b の2実施に分解（6c/6dはQA次第でスキップ、6eは省略）＝対象7ケース。実施環境は単一のため測定日は週1、検証・分析は平日に並行。全工程を<b>12月末までに完了</b>。
+  </div>
   <table>
-    <tr><th style="width:90px;">重要度</th><th>項目</th><th>内容と対応</th></tr>
-    <tr><td class="sev s-red">最優先</td><td>#4 未確定のまま日程確保</td>
-      <td>代行有無・「全件タイムアウト」範囲・発生方法（TCP_CLOSE案）が<b>要確認</b>。WBSでは<b>本番② 9/19実施</b>予定 → 逆算して8月前半までに確定が必要。</td></tr>
-    <tr><td class="sev s-red">最優先</td><td>#5 投入方法 未確定</td>
-      <td>新大阪検証機Sim／BT網経由の投入方法が未定（移行Tから情報入手が前提）。WBSでは<b>本番③ 10/3実施</b>予定 → 情報入手の期限管理が必要。</td></tr>
-    <tr><td class="sev s-org">中</td><td>#6 合格条件が未記入</td>
-      <td>#6(a)(b)は合格条件「後で」、全取引投入・TLS1.2は空欄。<b>#6各サブの合格条件を作成</b>（限界値・代行は「低下しない」が噛み合わないため観点調整）。</td></tr>
-    <tr><td class="sev s-org">中</td><td>合格条件の「平常時と比べ低下しない」が #5 に不適合</td>
-      <td>#5は平常時100TPSベースが無い（BT網50TPSのみ）。line「平常時と比べ特異時（BT網投入）に低下しない」は<b>比較対象が存在しない</b>。#5はNW性能（遅延/スループット/回線使用率）寄りに調整推奨。</td></tr>
-    <tr><td class="sev s-org">中</td><td>上乗せ条件の最終確認（#1/#2/#3）</td>
-      <td>各ケースに「100＋○○TPSであってる？」のQAが残存。<b>上乗せ方法の最終合意</b>を取る。</td></tr>
-    <tr><td class="sev s-grn">参考</td><td>全取引投入評価 / TLS1.2 の独立要否</td>
-      <td>いずれも「他ケースで吸収できるか」のQAのみ。<b>スキップ判断を確定</b>し、行を残すか削除かを決める。TLS1.2はQA1（仕変詳細）の確認も。</td></tr>
+    <thead><tr><th style="width:60px">週末測定日</th><th style="width:120px">ケース(各3ショット)</th><th>区分</th><th>検証・分析（平日並行）</th></tr></thead>
+    <tbody>
+      <tr><td>9/6(日)</td><td>#1, #2</td><td>本番</td><td>9/7〜9/12</td></tr>
+      <tr><td>9/13(日)</td><td>#3, #4</td><td>本番</td><td>9/14〜9/19</td></tr>
+      <tr><td>9/20(日)</td><td>#6a, #6b</td><td>本番</td><td>9/21〜9/26</td></tr>
+      <tr><td>9/27(日)</td><td>#5 <span class="mini">(8月確認後・困難なら後ろ倒し)</span></td><td>本番</td><td>9/28〜10/3</td></tr>
+      <tr style="background:#fff7ed"><td>10/4(日)</td><td>#1, #2</td><td>予備</td><td>10/5〜10/10</td></tr>
+      <tr style="background:#fff7ed"><td>10/11(日)</td><td>#3, #4</td><td>予備</td><td>10/12〜10/17</td></tr>
+      <tr style="background:#fff7ed"><td>10/18(日)</td><td>#6a, #6b</td><td>予備</td><td>10/19〜10/24</td></tr>
+      <tr style="background:#fff7ed"><td>10/25(日)</td><td>#5</td><td>予備</td><td>10/26〜10/31</td></tr>
+      <tr style="background:#eef2f7"><td>11/上〜</td><td colspan="3">バッファ（再々実施があれば11月前半の週末で吸収）</td></tr>
+      <tr style="background:#eef2f7"><td>結果報告</td><td colspan="3">11月中旬〜12/26：整理→作成→再鑑→各レビュー（12月末完了目標）</td></tr>
+    </tbody>
+  </table>
+  <p class="mini">※ 各週末は土日のどちらか1日を選択（環境・要員都合で確定）。本番8回＋バッファで7ケース×2回（本番+予備）を9〜10月に収容。日付は仮置き（C-2方針）で久保田さんの調整前提。#5は8月の移行リハ確認次第で順序入替の可能性あり。</p>
+
+  <!-- ============ 4. 相談一覧 ============ -->
+  <h2 class="section" id="s4">4. JCB相談事項 一覧（ケース単位）</h2>
+  <div class="lead">B-6方針：<b>こちらの想定をまとめて提案する形</b>。NW/IC・MS比率は §1（共通ST実施比率）を根拠に提示。ネガ操作種別・直近ISS最大TPSは未記載のため #4 と併せて相談。</div>
+  <table>
+    <thead><tr><th style="width:60px">ケース</th><th>相談内容（提案ベース）</th><th style="width:200px">こちらの想定／代替案</th></tr></thead>
+    <tbody>
+      <tr style="background:#ecfdf5"><td><b>共通</b></td><td><b>各特異ケースの投入方式：平常100TPSへ「追加上乗せ」か「一部置換」か</b>をケースごとに明確化（D-2）</td><td>原則は平常100TPS＋上乗せ。リソース評価上問題があるケースは置換も検討、として合意</td></tr>
+      <tr><td>#1</td><td>障害取消の対象ACQ/ISS、<b>一部取消ではなく全件「全額取消」でよいか</b>、100＋50TPSの妥当性</td><td>取消は<b>全額取消で統一</b>（一部取消はロジック変化が微妙）。対象ACQ/ISS・元取引バリエーションは取引比率（§1）に従う提案</td></tr>
+      <tr><td>#2</td><td>ネガのバリエーション（追加/更新/削除/照会）の選定</td><td>#126の障害時バリエーションに揃える案。<b>直近半年のネガ最大79TPS/最長190秒</b>の実績を共有し150×200の妥当性を確認</td></tr>
+      <tr><td>#3</td><td>ECHO対象ACQ、ツール限界を踏まえた投入TPSの確定方針</td><td>Adyen基準（67,282件/30秒・4930TPS/7秒）。<b>同値検証不要・全体DOWN回避が目的</b>で合意。環境制約を踏まえ可能な件数で</td></tr>
+      <tr><td>#4</td><td>① TO対象ACQ/ISS ② 平常を全件TOか追加投入か ③ 障害代行の有無</td><td>TO対象は取引比率に従う案。平常全件TO＋TCP_CLOSE方式の理解でよいか。代行ON/OFFの要否</td></tr>
+      <tr><td>#5</td><td>BT経由で流す取引のACQ/ISS・データバリエーション</td><td>取引比率依存でよいか。<b>※投入方法は移行リハ後（8月）に移行Tと確定</b></td></tr>
+      <tr><td>#6a</td><td>直近の同一ISS最大TPSの定義と、それを基準に各種代行比率（通常/少額/SP/障害時）を算出してよいか。通常取引が100TPSに含まれるか</td><td>直近同一ISS最大TPSを基準に代行比率を設定。<b>片系・両系どちらを要求するか</b>（方針は片系のみ）も確認</td></tr>
+      <tr><td>#6c</td><td>全取引投入は他ケースで取引比率に従い投入済 ＝ 解消（スキップ）でよいか</td><td>解消済の想定で提案（B-9）</td></tr>
+      <tr><td>#6d</td><td>TLS1.2の仕変詳細、独立ケース要否（他ケースをTLS1.2有効で兼ねられるか）</td><td>接続状態のため他ケースで吸収＝独立不要（スキップ）の想定で提案（B-9）</td></tr>
+    </tbody>
   </table>
 
-  <h2 class="section">C. WBS側の修正点</h2>
-
-  <div class="good">
-    <b>✅ 改善された点</b>：前回指摘した「本番①で#1〜#3を同日・同一メンバーで並走」は解消され、
-    <b>本番①(#1,#2 @9/5)／本番②(#3,#4 @9/19)／本番③(#5,#6 @10/3)</b> と2本ずつ・日程も分散されました。予備枠も維持。
-  </div>
-
-  <table>
-    <tr><th style="width:90px;">重要度</th><th>項目</th><th>内容と対応</th></tr>
-    <tr><td class="sev s-org">中</td><td>予定工数（M列）が全行空欄</td>
-      <td>必須列が未記入。複数名アサインが多く<b>要員山積みが不可視</b>。最低限、本番・事前走行は工数を入れる。</td></tr>
-    <tr><td class="sev s-org">中</td><td>中日程SEQ（S）・大中小分類（T/U/V）が空欄</td>
-      <td>中日程との<b>紐付け未実施</b>。トレーサビリティ確保のため記入。</td></tr>
-    <tr><td class="sev s-org">中</td><td>ステータス（R列）ほぼ空欄</td>
-      <td>No4のみ「完了」。進捗管理を回すため全行に初期値を入れて週次更新。</td></tr>
-    <tr><td class="sev s-org">中</td><td>結果報告（No73〜81）に日付なし</td>
-      <td>TIS内部レビュー以降〜JCBレビューが日付未設定。No72（〜1/8）に続けて補完。</td></tr>
-    <tr><td class="sev s-grn">参考</td><td>重複タスク名</td>
-      <td>No14/No15「疎通確認：GFPのみ投入」、No19/No21「実施・確認」が同名。フェーズ名（単独/全体、1巡目/2巡目）で区別を。</td></tr>
-    <tr><td class="sev s-grn">参考</td><td>#6が1ブロック（再掲）</td>
-      <td>A-3のとおり、#6の4サブをWBSに反映 or 実施計画を見直し。</td></tr>
-  </table>
-
-  <h2 class="section">D. スケジュール上のクリティカルパス</h2>
+  <!-- ============ 5. 共通準備タスク ============ -->
+  <h2 class="section" id="s5">5. 共通準備タスク（自前実施化を含む）</h2>
   <div class="card">
-    <ul style="margin:0;padding-left:18px;">
-      <li><b>ケース作成(No6) 6/26 → 再鑑(No7) 7/10</b>：だが <b>#4・#5の方法、代行比率(#DIV/0!) が未確定</b>のままだと、ケースが再鑑で固まりません。<span class="tag t-red">要先行クローズ</span></li>
-      <li><b>事前走行 7/1〜8/31 → 本番 9/5〜</b>：#4(タイムアウト発生方法)・#5(投入方法)・#3/#6(ツール到達TPS) は<b>事前走行で検証できる状態</b>にしておく必要。</li>
-      <li>ToDo#126依存（No4）は<b>完了済</b>。残るブロッカーは <b>代行比率・#4・#5・各QAのJCB/業務確認</b>。</li>
+    <h3><span class="tag t-org">追加</span> 5-1. MEASURE等の取得方法整理 ＆ OBEYファイル自作</h3>
+    <p>共通性能テストでは<b>別チームに依頼</b>して測定情報を取得していた。STEP2単独では<b>自前で実施できる</b>よう、取得手順を整理してコマンドファイル化する。</p>
+    <ul class="tight">
+      <li>対象ツール：<b>MEASURE</b>（CPU/DISC負荷率・メモリ等）、<b>PATHWAY STATS</b>（スレッド/スループット）、<b>PEEK</b>（PIN使用数）、<b>SCF</b>（iノードキャッシュ/データ転送量）、<b>TMFCOM</b>（RM）。</li>
+      <li>OBEYファイル化：「統計クリア → 取得開始 → 取得終了」の各コマンドを<b>定型OBEYファイル</b>として作成（計画書3.2.3.2 手順①〜⑨に対応）。</li>
+      <li>取得対象エンティティの定義（CPU/DISC/プロセス/SERVER等）を一覧化し、各ケースで再利用可能にする。</li>
+      <li>事前走行（7〜8月）で取得手順を試走し、自前取得が成立することを確認。</li>
+    </ul>
+    <p class="mini">→ WBSの「実施・検証手順」タスク（No9〜12）配下に <b>「MEASURE/統計 取得OBEY作成・試走」</b> を追加するのが妥当。</p>
+  </div>
+  <div class="card">
+    <h3>5-2. その他の事前準備（既出の集約）</h3>
+    <ul class="tight">
+      <li>#6b：電文ログ物理ファイルの<b>パーティション分割最適化</b>、Visa/J-Link通信の<b>process数増（SKEL修正）</b>。</li>
+      <li>#3：投入ツールが<b>5000TPS</b>を出せるかの事前検証。</li>
+      <li>#1：元取引電文の事前投入（承認後取引）。</li>
+      <li>#4：特定IFの<b>TCP_CLOSE</b>手段、障害時代行ONのテーブル設定。</li>
+      <li>#5：大阪ノード環境・投入ツール（移行Tから情報入手、8月）。</li>
     </ul>
   </div>
 
-  <h2 class="section">E. アクションプラン</h2>
+  <!-- ============ 6. WBS方針 ============ -->
+  <h2 class="section" id="s6">6. WBS対応方針（決定反映）</h2>
   <table>
-    <tr><th style="width:36px;">#</th><th>アクション</th><th style="width:70px;">優先</th><th style="width:100px;">期限目安</th><th style="width:130px;">担当(想定)</th></tr>
-    <tr><td>1</td><td><b>#2ネガTPSの整合</b>：計画書本文を <code>150TPS×200秒</code> に更新し、TCと一致させる</td><td class="sev s-red">最優先</td><td>6月</td><td>性能（内藤/久保田）</td></tr>
-    <tr><td>2</td><td><b>代行比率(#DIV/0!)の実績値確定</b>（直近同一ISS最大TPSを基準に算出）</td><td class="sev s-red">最優先</td><td>6月</td><td>久保田＋業務/JCB</td></tr>
-    <tr><td>3</td><td><b>#4の確定</b>：代行有無・全件タイムアウト範囲・発生方法（TCP_CLOSE）</td><td class="sev s-red">最優先</td><td>〜7月上旬（再鑑前）</td><td>久保田＋HAS</td></tr>
-    <tr><td>4</td><td><b>#5投入方法の確定</b>：大阪ノード／BT網／投入ツール（移行Tから情報入手）</td><td class="sev s-red">最優先</td><td>〜7月（本番③逆算）</td><td>久保田＋移行T</td></tr>
-    <tr><td>5</td><td><b>WBSに#6の4サブを反映</b> or 実施日程・工数の見直し</td><td class="sev s-org">高</td><td>6月（再鑑前）</td><td>久保田</td></tr>
-    <tr><td>6</td><td><b>QA群のJCB/業務確認</b>：対象ACQ/ISS、ネガ操作種別、直近同一ISS最大TPS 等（JTすり合わせで）</td><td class="sev s-org">高</td><td>6月</td><td>久保田＋JCB</td></tr>
-    <tr><td>7</td><td><b>#6各サブの合格条件を作成</b>（限界値・代行は観点調整）</td><td class="sev s-org">中</td><td>6月（ケース作成中）</td><td>久保田</td></tr>
-    <tr><td>8</td><td><b>WBS：予定工数(M)記入</b>（要員山積み可視化）</td><td class="sev s-org">中</td><td>6月</td><td>久保田</td></tr>
-    <tr><td>9</td><td><b>WBS：中日程SEQ/分類の紐付け＋ステータス運用開始</b></td><td class="sev s-org">中</td><td>6月</td><td>久保田</td></tr>
-    <tr><td>10</td><td><b>WBS：結果報告(No73-81)の日付補完／重複タスク名の是正</b></td><td class="sev s-org">中</td><td>7月</td><td>久保田</td></tr>
-    <tr><td>11</td><td><b>#5合格条件のNW性能寄り調整</b>、上乗せ方法(#1/#2/#3)の最終合意</td><td class="sev s-grn">参考</td><td>6月</td><td>久保田</td></tr>
-    <tr><td>12</td><td><b>全取引投入・TLS1.2の独立要否を確定</b>（スキップ判断）</td><td class="sev s-grn">参考</td><td>6月</td><td>久保田</td></tr>
+    <thead><tr><th style="width:60px">項目</th><th>決定方針</th></tr></thead>
+    <tbody>
+      <tr><td>予定工数(M)</td><td><b>今は不要・詰めない（C-1）</b>。「いつまでにやりきるか」（期日）だけ管理する。</td></tr>
+      <tr><td>中日程SEQ/分類(S/T/U/V)</td><td>当面は必須としない（C-1）。期日管理を優先。</td></tr>
+      <tr><td>ステータス(R)</td><td>運用開始（進捗可視化）。現状の完了はNo4のみ。</td></tr>
+      <tr><td>結果報告 日付(No73-81)</td><td><b>未知数のため適当に期間を決めて提案 → その通り埋める（C-2）</b>。日付には重心を置かない。§3スケジュールに合わせ12月末完了で仮置き。</td></tr>
+      <tr><td>重複タスク名</td><td>No14・15「疎通確認：GFPのみ投入」、No19・21「実施・確認」を識別可能な名称へ是正。</td></tr>
+      <tr><td>#6 細分化</td><td>#6a/#6b を別タスク化（#5も独立）。対象7ケース。§3素案を反映。</td></tr>
+      <tr><td>予備枠/実施日</td><td><b>予備枠は基本使う前提で最適化（D-4）</b>：各ケース＝本番＋予備の2回を計画に織込む。<b>土日のどちらか1日に2ケースずつ</b>実施（週1測定日）。</td></tr>
+      <tr><td>準備タスク追加</td><td><b>MEASURE/統計 取得OBEY作成・試走</b>（§5-1）を「実施・検証手順」配下に追加。</td></tr>
+    </tbody>
   </table>
 
+  <!-- ============ 付録 ============ -->
+  <h2 class="section" id="s7">付録. 標準合格条件「9行」（全#統一・2行目の( )内のみ差替）</h2>
+  <div class="card">
+    <ol>
+      <li>目標取引処理件数分のデータ量が正常に処理されること。</li>
+      <li>平常時と比べ、特異時（<b>○○時</b>）にスループット(TPS/件時)が低下しないこと。（目的①）</li>
+      <li>NSS内レスポンスについて、通常時（高負荷ではない状態）のレスポンスと比較して、劣化がないこと。</li>
+      <li>各システムリソースの使用量・使用率が閾値未満であること。</li>
+      <li>特異時にボトルネックとなるリソース項目がないこと。（目的②）</li>
+      <li>想定外のボトルネックが発生しないこと。</li>
+      <li>要件定義書(非機能要件)「4.2.1. リソース・性能要件」の目標値を満たしていること。</li>
+      <li>要件定義書(非機能要件)「3.9.3. 性能要件」の目標値を満たしていること。</li>
+      <li>目標値を満たしていない項目については、業務影響有無及び対策が明確になっていること。</li>
+    </ol>
+    <p class="mini">差替語：#1=障害取消大量受信時／#2=ネガデータ大量受信時／#3=ECHO大量受信時（＋GFP全体DOWN回避を追記）／#4=仕向先応答遅延発生時／#5=BT網による投入時（当面現状維持）。#6a/#6bは後で作成。</p>
+  </div>
+
   <footer>
-    出典：① 個別テスト計画(GFP編)_性能テスト Ver1.2（3.2.STEP2単独）／② テストケース一覧 ST Ver.0.6／③ CBS構築 WBS。<br>
-    本書はレビュー補助資料です。値・日程は各資料の最新版で必ず確認してください。担当欄は推定を含みます。
+    <b>本書について</b>：① 計画(GFP編) Ver1.2、② テストケース ST Ver.0.6、③ CBS構築WBS、④ 計画「3.1.共通ST」シート（投入比率）を実ファイルで突き合わせて作成。
+    久保田さんの決定事項（2026-06-16）を反映し、ケース単位で再整理。決定の永続記録は <code>01_計画/検討メモ_決定事項ログ.md</code>。<br>
+    生成：2026-06-16 ／ ブランチ：claude/amazing-pascal-lzjs2l
   </footer>
 </div>
 </body>

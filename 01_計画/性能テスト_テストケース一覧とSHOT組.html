@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEP2単独性能テスト｜テストケース一覧 ＆ SHOT組</title>
+<style>
+  body{margin:0;font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;background:#f4f6f9;color:#1f2933;line-height:1.65;font-size:14px;}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:24px 30px;}
+  header h1{margin:0 0 6px;font-size:21px;}
+  header p{margin:1px 0;opacity:.93;font-size:12.5px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 20px 80px;}
+  h2{font-size:18px;margin:34px 0 10px;padding-left:11px;border-left:5px solid #2563eb;}
+  .lead{background:#e8f0fe;border:1px solid #c3dafe;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:13px;color:#1e40af;}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12.5px;}
+  th,td{border:1px solid #d9e2ec;padding:7px 9px;text-align:left;vertical-align:top;}
+  th{background:#1f4e79;color:#fff;font-weight:600;}
+  tbody tr:nth-child(even){background:#fafbfc;}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:20px;}
+  .t-grn{background:#d1fae5;color:#047857;}.t-red{background:#fee2e2;color:#b91c1c;}.t-org{background:#fef3c7;color:#b45309;}.t-blu{background:#e8f0fe;color:#1e40af;}.t-gry{background:#eef2f7;color:#52606d;}
+  .g1{background:#ecfdf5;} .g2{background:#fff7ed;}
+  .num{text-align:center;white-space:nowrap;}
+  .card{background:#fff;border:1px solid #d9e2ec;border-radius:10px;padding:14px 18px;margin:12px 0;}
+  .mini{font-size:11.5px;color:#52606d;}
+  .big{font-size:15px;font-weight:700;color:#1e3a8a;}
+  ul{margin:6px 0;padding-left:20px;} li{margin:3px 0;}
+  footer{margin-top:30px;font-size:11.5px;color:#52606d;border-top:1px solid #d9e2ec;padding-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>STEP2単独性能テスト（GFP）｜テストケース一覧 ＆ SHOT組</h1>
+  <p>目的：①平常時比で特異時に性能(TPS/レスポンス)が低下しない ②リソース・ボトルネック評価</p>
+  <p>前提：新東京検証機・本番相当・コアアップなし／縮退(片系)8CPU・2コア／平常時100TPS／各測定3ショット</p>
+  <p>作成：2026-06-16</p>
+</header>
+<div class="wrap">
+
+  <div class="lead">
+    <b>考え方（これだけ）：</b>「<b>平常時100TPS</b>」は全ケース共通の土台。だから<b>平常時だけを流す“基準SHOT”を1つ作り、各特異ケースはその上に特異を上乗せして比較</b>する。
+    こうすると <b>#6c(全取引投入)・#6d(TLS1.2) は基準SHOTで兼ねられ、独立ケース不要</b>になり、ケースもSHOTも大幅に減らせます。
+  </div>
+
+  <!-- ====== 表1 ====== -->
+  <h2>1. 最終テストケース一覧（確認したい内容）</h2>
+  <table>
+    <thead><tr>
+      <th style="width:30px">No</th><th style="width:150px">ケース</th><th>投入（特異の上乗せ）</th><th style="width:120px">機械条件</th><th style="width:80px">状態</th><th style="width:200px">合格の主眼</th>
+    </tr></thead>
+    <tbody>
+      <tr class="g1"><td class="num">0</td><td><b>平常時 基準</b><br><span class="mini">(共通土台)</span></td><td>平常100TPS のみ（本番取引比率で全経路／<b>TLSオン</b>で実施）</td><td>片系 8CPU2コア 通常</td><td><span class="tag t-blu">新規<br>(共通化)</span></td><td>平常時のCPU/レスポンスが要件内 ＝ 全ケースの比較基準</td></tr>
+      <tr><td class="num">1</td><td>#1 同一会員 障害取消大量受信</td><td>平常100 ＋ 障害取消(#420) <b>50TPS（同時上乗せ・継続）</b></td><td>片系 8CPU2コア 通常</td><td><span class="tag t-grn">確定</span></td><td>平常比でTPS/レスポンス低下なし</td></tr>
+      <tr><td class="num">2</td><td>#2 ネガデータ大量受信</td><td>平常100 ＋ ネガ(#302) <b>150TPS×200秒</b>（短時間バースト）</td><td>片系 8CPU2コア 通常</td><td><span class="tag t-grn">確定</span></td><td>平常比で低下なし</td></tr>
+      <tr><td class="num">3</td><td>#3 ECHO大量受信</td><td>平常100 ＋ echo(#800) <b>5000TPS×10秒</b>（瞬間バースト）</td><td>片系 8CPU2コア 通常</td><td><span class="tag t-grn">確定</span></td><td>GFP全体がDOWNせず平常取引継続</td></tr>
+      <tr><td class="num">4</td><td>#4 仕向先応答遅延</td><td>平常100、特定ISSを無応答→<b>全件タイムアウト</b></td><td>片系 8CPU2コア（代行有無:要確認）</td><td><span class="tag t-red">未確定</span></td><td>平常比で低下なし（TOは想定内）</td></tr>
+      <tr><td class="num">5</td><td>#6a 代行機能</td><td>平常 ＋ 代行対象ISS宛を<b>代行TPS</b>（比率は要確定）</td><td>片系 2コア 代行</td><td><span class="tag t-org">比率未確定</span></td><td>現行J/B（両系180/片系260TPS）から大幅劣化なし</td></tr>
+      <tr><td class="num">6</td><td>#6b 限界値評価</td><td><b>数点TPS</b>（100/200/300…）各点測定、リソース限界で終了</td><td>片系 2コア 通常</td><td><span class="tag t-grn">確定</span></td><td>限界TPS把握。電文ログ物理ファイルのパーティション最適化も観点</td></tr>
+      <tr><td class="num">7</td><td>#5 国際NW性能測定</td><td>大阪Sim→<b>BT網経由50TPS</b>（平常なし・別環境）</td><td>片系 8CPU2コア 通常</td><td><span class="tag t-red">未確定<br>(別環境)</span></td><td>NW性能（平常比なし→NW寄りに調整）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <span class="big">独立ケースにしない（基準SHOTで兼ねる）</span>
+    <table style="margin-top:8px">
+      <thead><tr><th style="width:160px">旧ケース</th><th>どこで確認するか</th></tr></thead>
+      <tbody>
+        <tr><td>#6c 全取引投入評価</td><td><b>No0 平常基準</b>で本番取引比率を全経路に流すため、全取引種別が流れる＝兼ねる（→ 解消）</td></tr>
+        <tr><td>#6d TLS1.2対応</td><td><b>No0 平常基準を「TLSオン」で実施</b>すれば兼ねる。なお“TLS前後の性能比較(事前性能)”は<b>CM-077でTISインフラ側が別途実施</b>（二重実施しない）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== 表2 SHOT組 ====== -->
+  <h2>2. SHOT組（実際に何回流すか・兼用関係）</h2>
+  <div class="lead">「1 SHOT＝平常15分投入（必要なら特異を上乗せ）＋Measure」。ばらつき対策で<b>各SHOTを3回</b>。同じ流し方で複数を兼ねられるものをまとめます。</div>
+  <table>
+    <thead><tr><th style="width:80px">SHOT組</th><th style="width:230px">兼ねるケース</th><th>流し方</th><th style="width:70px">回数</th></tr></thead>
+    <tbody>
+      <tr class="g1"><td><b>G1 平常系</b></td><td>No0 平常基準 ＝ <b>#6c 全取引</b> ＝ <b>#6d TLS</b> ＝ <b>#6b の100TPS点</b></td><td>平常100TPS（本番比率・全経路・<b>TLSオン</b>）を15分</td><td class="num">×3</td></tr>
+      <tr class="g2"><td><b>G2 バースト系</b><br><span class="mini">(任意で統合)</span></td><td>#2 ネガ ＋ #3 ECHO</td><td>平常100の15分runの中で、<b>時間をずらして</b>ネガ200秒・echo10秒を投入（分析を分けたいなら各別SHOTでも可）</td><td class="num">×3</td></tr>
+      <tr><td>単独 A</td><td>#1 障害取消</td><td>平常100 ＋ 障害取消50を<b>同時・継続</b>投入（短時間バーストでないため単独）</td><td class="num">×3</td></tr>
+      <tr><td>単独 B</td><td>#4 応答遅延</td><td>平常100、特定ISSをTCP_CLOSE等で全件TO</td><td class="num">×3</td></tr>
+      <tr><td>単独 C</td><td>#6a 代行</td><td>平常 ＋ 代行TPS（<b>代行マスタ設定が必要</b>＝他と混ぜられない）</td><td class="num">×3</td></tr>
+      <tr><td>単独 D</td><td>#6b 限界値の追加点</td><td>200/300/400…の各点（100点はG1で兼用）</td><td class="num">点数×3</td></tr>
+      <tr><td>別環境</td><td>#5 国際NW</td><td>大阪Sim→BT網50TPS（<b>別環境・別ツール・8月以降</b>）</td><td class="num">×3</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card">
+    <span class="big">合計の目安</span>
+    <ul>
+      <li><b>測定ケース＝実質 7本</b>（平常基準／#1／#2／#3／#4／#6a／#6b）＋ <b>#5（別環境・後半）</b>。<br>#6c・#6d は基準に吸収して<b>独立ケース廃止</b>。</li>
+      <li><b>SHOT総数の目安 ≒ 24〜30ショット</b>（各3回。#6b限界値の追加点数で増減。G2を統合すると▲3）。</li>
+      <li>土日のどちらか1日に2ケースずつ＋予備、で9〜10月に収まる規模感（前のスケジュール素案と整合）。</li>
+    </ul>
+  </div>
+
+  <!-- ====== 事前準備の依存 ====== -->
+  <h2>3. 各SHOTの事前準備（これがあるから混ぜられない／順番に効く）</h2>
+  <table>
+    <thead><tr><th style="width:120px">ケース</th><th>事前準備（混ぜられない理由）</th></tr></thead>
+    <tbody>
+      <tr><td>G1 平常基準</td><td>本番取引比率の投入データ（制御系電文0302/0620/0820/1520は別管理）。TLSオンの環境設定。</td></tr>
+      <tr><td>#1 障害取消</td><td><b>元取引を事前投入</b>してから取消。電文 50TPS×60s×10m×2倍＝60,000（再利用難なら×3）。</td></tr>
+      <tr><td>#2 ネガ</td><td>ネガ電文 150×200＝30,000。照会系は3ショット再利用可、更新系は再生成要。</td></tr>
+      <tr><td>#3 ECHO</td><td>echo電文 5000×10＝50,000。<b>ツールが5000TPS出せるか事前検証必須</b>。</td></tr>
+      <tr><td>#4 応答遅延</td><td>特定IFのTCP_CLOSE手段。代行発生なら障害時代行ONのテーブル設定。</td></tr>
+      <tr><td>#6a 代行</td><td><b>代行データ＋マスタ設定</b>。代行比率の実績値確定（TC6-1-1 QA1）。</td></tr>
+      <tr><td>#6b 限界値</td><td>数点TPSのSHOT準備。Visa/J-Link通信のprocess数増（SKEL修正）。</td></tr>
+      <tr><td>#5 国際NW</td><td>大阪ノード環境・投入ツール（移行Tから情報入手・8月）。</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ====== 残論点 ====== -->
+  <h2>4. ケース確定に必要な残QA（埋まればケース固定）</h2>
+  <table>
+    <thead><tr><th style="width:60px">ケース</th><th>確定が要る点</th></tr></thead>
+    <tbody>
+      <tr><td>共通</td><td>各特異は「平常100＋上乗せ」か「平常の一部を置換」か（投入総量の前提）</td></tr>
+      <tr><td>#1</td><td>対象ACQ/ISS（取引比率で可？）／<b>取消は全件“全額取消”で合意</b>／100+50で可？</td></tr>
+      <tr><td>#2</td><td>ネガのバリエーション（追加/更新/削除/照会）の選定</td></tr>
+      <tr><td>#3</td><td>対象ACQ（Adyen？）／ツール限界TPSの確定方針</td></tr>
+      <tr><td>#4</td><td>対象ISS／全件TOか追加投入か／代行ON-OFF</td></tr>
+      <tr><td>#6a</td><td>直近同一ISS最大TPSの定義と各種代行比率（通常/少額/SP/障害）／片系のみか両系も</td></tr>
+      <tr><td>#5</td><td>BT経由の取引比率／投入方法（移行リハ後・8月）</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    出典：① テストケース一覧 ST Ver.0.6、② 個別テスト計画(GFP編) Ver1.2、③ WBS／および本セッションの決定事項ログ。<br>
+    ポイント：「平常時100TPS基準」を1本に共通化 → #6c/#6d吸収 → ケース7本＋#5。SHOTは平常系G1で最大限兼用。
+  </footer>
+</div>
+</body>
+</html>

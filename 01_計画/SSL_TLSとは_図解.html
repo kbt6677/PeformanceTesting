@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSL / TLSってなに？ 図解</title>
+<style>
+  body{margin:0;font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;background:#f4f6f9;color:#1f2933;line-height:1.7;}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 18px 80px;}
+  header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:24px 28px;border-radius:0 0 14px 14px;}
+  header h1{margin:0 0 6px;font-size:22px;}
+  header p{margin:0;opacity:.92;font-size:13.5px;}
+  .fig{background:#fff;border:1px solid #d9e2ec;border-radius:12px;padding:18px 20px;margin:20px 0;box-shadow:0 1px 3px rgba(15,23,42,.05);}
+  .fig h2{font-size:17px;margin:0 0 4px;color:#1e3a8a;}
+  .fig .lead{font-size:13.5px;color:#52606d;margin:0 0 12px;}
+  .fig svg{width:100%;height:auto;display:block;}
+  .pt{background:#e8f0fe;border:1px solid #c3dafe;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:13.5px;color:#1e40af;}
+  .pt b{color:#b91c1c;}
+  footer{margin-top:30px;font-size:12px;color:#52606d;border-top:1px solid #d9e2ec;padding-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>SSL / TLS ってなに？ ぜんぶ図で説明します</h1>
+  <p>ネットワークの知識ゼロでも分かるように、たとえ話と図だけで。VISA/Mastercard の「TLS1.2対応(CM-077)」の性能テストを理解するための前提知識です。</p>
+</header>
+<div class="wrap">
+
+  <!-- Fig1 -->
+  <div class="fig">
+    <h2>① そもそも TLS（＝SSL）は「通信に鍵をかける」こと</h2>
+    <p class="lead">通信を暗号化して、途中の人に中身を読まれないようにする仕組みです。</p>
+    <svg viewBox="0 0 860 220" role="img">
+      <!-- postcard -->
+      <text x="20" y="30" font-size="15" font-weight="bold" fill="#b45309">✗ 鍵なし＝ハガキ</text>
+      <rect x="20" y="42" width="200" height="110" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+      <text x="34" y="70" font-size="12" fill="#92400e">カード番号 1234-5678</text>
+      <text x="34" y="92" font-size="12" fill="#92400e">残高 ¥120,000</text>
+      <text x="34" y="114" font-size="12" fill="#92400e">承認してOK</text>
+      <!-- eyes -->
+      <text x="250" y="80" font-size="30">👀</text>
+      <text x="245" y="120" font-size="12" fill="#b91c1c">途中の人に丸見え</text>
+
+      <!-- arrow -->
+      <text x="430" y="105" font-size="26" fill="#94a3b8">→</text>
+
+      <!-- locked envelope -->
+      <text x="500" y="30" font-size="15" font-weight="bold" fill="#047857">○ 鍵あり(TLS)＝封筒に施錠</text>
+      <rect x="500" y="42" width="200" height="110" rx="6" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
+      <!-- envelope flap -->
+      <polygon points="500,42 600,110 700,42" fill="none" stroke="#059669" stroke-width="2"/>
+      <!-- padlock -->
+      <rect x="582" y="92" width="36" height="28" rx="4" fill="#065f46"/>
+      <path d="M588 92 v-8 a12 12 0 0 1 24 0 v8" fill="none" stroke="#065f46" stroke-width="4"/>
+      <text x="730" y="80" font-size="30">🙈</text>
+      <text x="720" y="120" font-size="12" fill="#047857">中身は読めない</text>
+    </svg>
+    <div class="pt">「鍵マーク🔒の付いたサイト(https)」と同じ技術です。<b>今回は VISA/Mastercard との通信をこの“鍵付き”に変える</b>のがCM-077。</div>
+  </div>
+
+  <!-- Fig2 -->
+  <div class="fig">
+    <h2>② 全体の通り道：どこが暗号化されている？</h2>
+    <p class="lead">Mastercard から JCB(GFP) まで、ネットワークの上は鍵がかかったまま運ばれます。</p>
+    <svg viewBox="0 0 860 180" role="img">
+      <!-- Mastercard -->
+      <rect x="20" y="60" width="150" height="60" rx="8" fill="#1e3a8a"/>
+      <text x="95" y="88" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">Mastercard</text>
+      <text x="95" y="106" font-size="11" fill="#cbd5e1" text-anchor="middle">/ VISA</text>
+      <!-- wire with lock -->
+      <line x1="170" y1="90" x2="350" y2="90" stroke="#dc2626" stroke-width="6"/>
+      <rect x="240" y="62" width="30" height="22" rx="3" fill="#b91c1c"/>
+      <path d="M245 62 v-6 a10 10 0 0 1 20 0 v6" fill="none" stroke="#b91c1c" stroke-width="3"/>
+      <text x="255" y="120" font-size="12" fill="#b91c1c" text-anchor="middle">🔒暗号化</text>
+      <!-- Network -->
+      <rect x="350" y="60" width="150" height="60" rx="8" fill="#475569"/>
+      <text x="425" y="95" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">ネットワーク</text>
+      <!-- wire2 -->
+      <line x1="500" y1="90" x2="680" y2="90" stroke="#dc2626" stroke-width="6"/>
+      <rect x="575" y="62" width="30" height="22" rx="3" fill="#b91c1c"/>
+      <path d="M580 62 v-6 a10 10 0 0 1 20 0 v6" fill="none" stroke="#b91c1c" stroke-width="3"/>
+      <text x="590" y="120" font-size="12" fill="#b91c1c" text-anchor="middle">🔒暗号化</text>
+      <!-- GFP -->
+      <rect x="680" y="60" width="150" height="60" rx="8" fill="#047857"/>
+      <text x="755" y="88" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">JCB（GFP）</text>
+      <text x="755" y="106" font-size="11" fill="#bbf7d0" text-anchor="middle">入口で鍵を外す</text>
+    </svg>
+    <div class="pt">外を通っている間はずっと鍵付き。<b>GFPの入口に着いて初めて鍵を外して(復号して)中身を処理</b>します。次の図がGFPの中身です。</div>
+  </div>
+
+  <!-- Fig3 -->
+  <div class="fig">
+    <h2>③ GFPの中身：「SSLの箱」で鍵を外す。そこから先は“素の電文”</h2>
+    <p class="lead">石塚さんが言っていた A.Provider → B.SSL → C.通信制御 → D.業務アプリ の並びです。</p>
+    <svg viewBox="0 0 860 260" role="img">
+      <!-- encrypted zone label -->
+      <rect x="15" y="20" width="270" height="24" rx="4" fill="#fee2e2"/>
+      <text x="150" y="37" font-size="12" fill="#b91c1c" text-anchor="middle" font-weight="bold">🔒 ここまで暗号化されている</text>
+      <!-- decrypted zone label -->
+      <rect x="300" y="20" width="545" height="24" rx="4" fill="#d1fae5"/>
+      <text x="572" y="37" font-size="12" fill="#047857" text-anchor="middle" font-weight="bold">🔓 ここから先は鍵が外れた“素の電文”（社内なので安全）</text>
+
+      <!-- boxes -->
+      <g font-size="13" text-anchor="middle">
+        <!-- Provider -->
+        <rect x="20" y="90" width="130" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="85" y="125" font-weight="bold" fill="#1e3a8a">A. Provider</text>
+        <text x="85" y="145" font-size="11" fill="#1e40af">受け口</text>
+        <!-- SSL -->
+        <rect x="195" y="85" width="140" height="90" rx="8" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+        <text x="265" y="118" font-weight="bold" fill="#92400e">B. SSL</text>
+        <text x="265" y="138" font-size="11" fill="#92400e">★鍵を外す/かける</text>
+        <text x="265" y="155" font-size="11" fill="#92400e">＝TLSの仕事はココ</text>
+        <!-- 通信制御 -->
+        <rect x="380" y="90" width="140" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="450" y="125" font-weight="bold" fill="#1e3a8a">C. 通信制御</text>
+        <text x="450" y="145" font-size="11" fill="#1e40af">中身をチェック</text>
+        <!-- 業務アプリ -->
+        <rect x="565" y="90" width="140" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="635" y="125" font-weight="bold" fill="#1e3a8a">D. 業務アプリ</text>
+        <text x="635" y="145" font-size="11" fill="#1e40af">取引を処理</text>
+        <!-- response -->
+        <rect x="745" y="90" width="95" height="80" rx="8" fill="#ecfccb" stroke="#65a30d" stroke-width="2"/>
+        <text x="792" y="130" font-size="12" fill="#3f6212" font-weight="bold">応答を返す</text>
+      </g>
+      <!-- arrows -->
+      <g stroke="#64748b" stroke-width="3" marker-end="url(#a)">
+        <line x1="150" y1="130" x2="190" y2="130"/>
+        <line x1="335" y1="130" x2="378" y2="130"/>
+        <line x1="520" y1="130" x2="563" y2="130"/>
+        <line x1="705" y1="130" x2="743" y2="130"/>
+      </g>
+      <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#64748b"/></marker></defs>
+      <!-- lock over first wire -->
+      <text x="170" y="200" font-size="12" fill="#b91c1c" text-anchor="middle">🔒のまま入る</text>
+      <text x="265" y="205" font-size="12" fill="#d97706" text-anchor="middle" font-weight="bold">ここで開錠</text>
+      <text x="450" y="200" font-size="12" fill="#047857" text-anchor="middle">🔓素の電文で処理</text>
+    </svg>
+    <div class="pt"><b>TLSで機械が頑張るのは「B.SSLの箱」だけ。</b>C・Dは今までと同じ素の電文で動くので、取引処理そのものは変わりません。→ だから影響は「B.SSLの分だけ増えるか？」を見ればよい。</div>
+  </div>
+
+  <!-- Fig4 -->
+  <div class="fig">
+    <h2>④ 一番重いのは「最初の握手」だけ。普段は軽い</h2>
+    <p class="lead">鍵を合わせる挨拶（握手）は接続した瞬間に1回。あとは鍵を使い回すので速い。</p>
+    <svg viewBox="0 0 860 230" role="img">
+      <!-- handshake phase -->
+      <rect x="15" y="20" width="380" height="190" rx="10" fill="#fff7ed" stroke="#fb923c" stroke-width="2"/>
+      <text x="205" y="44" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">最初の1回：握手（重い）</text>
+      <text x="60" y="90" font-size="30">🤝</text>
+      <g font-size="12.5" fill="#7c2d12">
+        <text x="110" y="80">「あなた本物？」</text>
+        <text x="110" y="103">「本物です（証明書を提示）」</text>
+        <text x="110" y="126">「じゃあこの鍵で話そう」</text>
+      </g>
+      <text x="205" y="170" font-size="12" fill="#9a3412" text-anchor="middle">↑ ここだけCPUを少し使う</text>
+      <text x="205" y="190" font-size="12" fill="#9a3412" text-anchor="middle">（接続した瞬間に1回だけ）</text>
+
+      <!-- steady phase -->
+      <rect x="425" y="20" width="420" height="190" rx="10" fill="#ecfdf5" stroke="#34d399" stroke-width="2"/>
+      <text x="635" y="44" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">そのあと：取引を量産（軽い）</text>
+      <g>
+        <rect x="455" y="70" width="50" height="34" rx="4" fill="#a7f3d0" stroke="#059669"/>
+        <rect x="520" y="70" width="50" height="34" rx="4" fill="#a7f3d0" stroke="#059669"/>
+        <rect x="585" y="70" width="50" height="34" rx="4" fill="#a7f3d0" stroke="#059669"/>
+        <rect x="650" y="70" width="50" height="34" rx="4" fill="#a7f3d0" stroke="#059669"/>
+        <rect x="715" y="70" width="50" height="34" rx="4" fill="#a7f3d0" stroke="#059669"/>
+        <text x="480" y="92" font-size="14" text-anchor="middle">🔒</text>
+        <text x="545" y="92" font-size="14" text-anchor="middle">🔒</text>
+        <text x="610" y="92" font-size="14" text-anchor="middle">🔒</text>
+        <text x="675" y="92" font-size="14" text-anchor="middle">🔒</text>
+        <text x="740" y="92" font-size="14" text-anchor="middle">🔒</text>
+      </g>
+      <text x="635" y="150" font-size="12.5" fill="#065f46" text-anchor="middle">同じ鍵で封筒を量産するだけ</text>
+      <text x="635" y="172" font-size="12.5" fill="#065f46" text-anchor="middle">＝1件あたりの手間はごくわずか</text>
+    </svg>
+    <div class="pt">CBSは「つなぎっぱなし」なので握手は最初だけ。<b>久保田さん（実は石塚さん）の記憶「測ったらほぼ機械を使っていない」</b>は、この仕組みからして自然です。</div>
+  </div>
+
+  <!-- Fig5 -->
+  <div class="fig">
+    <h2>⑤ 性能テストの絵：普通の電文を「TLSオン」で流してCPUを見るだけ</h2>
+    <p class="lead">特別な“SSL電文”は不要。TLSは通り道の性質なので、普通の取引を流せば自動で暗号/復号されます。</p>
+    <svg viewBox="0 0 860 250" role="img">
+      <!-- simulator -->
+      <rect x="20" y="80" width="140" height="70" rx="8" fill="#1e3a8a"/>
+      <text x="90" y="110" font-size="13" fill="#fff" text-anchor="middle" font-weight="bold">シミュレータ</text>
+      <text x="90" y="130" font-size="11" fill="#cbd5e1" text-anchor="middle">取引を自動で送る</text>
+      <!-- pipe TLS ON -->
+      <rect x="170" y="95" width="250" height="40" rx="20" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+      <text x="295" y="120" font-size="13" fill="#92400e" text-anchor="middle" font-weight="bold">🔒 TLSオンの通り道</text>
+      <!-- envelopes flowing -->
+      <text x="200" y="80" font-size="13">🔒</text><text x="260" y="80" font-size="13">🔒</text><text x="320" y="80" font-size="13">🔒</text><text x="380" y="80" font-size="13">🔒</text>
+      <!-- GFP -->
+      <rect x="430" y="80" width="140" height="70" rx="8" fill="#047857"/>
+      <text x="500" y="110" font-size="13" fill="#fff" text-anchor="middle" font-weight="bold">GFP</text>
+      <text x="500" y="130" font-size="11" fill="#bbf7d0" text-anchor="middle">SSLで復号→処理</text>
+      <!-- Measure meter -->
+      <rect x="620" y="55" width="220" height="150" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+      <text x="730" y="80" font-size="13" fill="#334155" text-anchor="middle" font-weight="bold">Measure（CPUメーター）</text>
+      <!-- gauge bar -->
+      <rect x="650" y="100" width="160" height="22" rx="4" fill="#e2e8f0"/>
+      <rect x="650" y="100" width="70" height="22" rx="4" fill="#22c55e"/>
+      <line x1="770" y1="92" x2="770" y2="130" stroke="#b91c1c" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="772" y="146" font-size="11" fill="#b91c1c">閾値(例75%)</text>
+      <text x="685" y="116" font-size="11" fill="#166534" font-weight="bold">CPU 43%</text>
+      <text x="730" y="180" font-size="13" fill="#166534" text-anchor="middle" font-weight="bold">線の下なら ◯ 合格</text>
+      <!-- arrows -->
+      <g stroke="#64748b" stroke-width="3" marker-end="url(#b)">
+        <line x1="160" y1="115" x2="168" y2="115"/>
+        <line x1="420" y1="115" x2="428" y2="115"/>
+      </g>
+      <defs><marker id="b" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#64748b"/></marker></defs>
+    </svg>
+    <div class="pt">やること＝<b>「TLSをオンにした接続に、いつもの取引を15分流す。MeasureでCPUを見て、閾値の線より下なら合格」</b>。BEFORE(オフ時)を省くなら、AFTER(オン時)だけ測って閾値判定でOK。</div>
+  </div>
+
+  <footer>
+    補足：図④の「握手」のCPUは接続した瞬間だけなので、見たい場合は“電文を流す”のではなく“環境を起動する/片系に切り替える瞬間”にMeasureを見ます（電文SHOTとは別の観測）。<br>
+    作成：2026-06-16 ／ CBS構築STEP2 性能テスト TLS1.2(CM-077) 理解用
+  </footer>
+</div>
+</body>
+</html>
